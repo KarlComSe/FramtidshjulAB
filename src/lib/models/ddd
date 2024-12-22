@@ -1,0 +1,86 @@
+
+import { ScooterNameGenerator } from '$lib/bikeUtils';
+
+// This is 100 % chatGTP generated code and quite slooppy reviewed by me
+export class ScooterNameGenerator {
+    private static instance: ScooterNameGenerator;
+  
+    // Private pools of adjectives, nouns, and themes
+    private adjectives: string[] = [
+      "Speedy",
+      "Zippy",
+      "Happy",
+      "Lazy",
+      "Mighty",
+      "Cheeky",
+    ];
+    private nouns: string[] = [
+      "Rider",
+      "Rocket",
+      "Comet",
+      "Explorer",
+      "Cruiser",
+      "Zoomer",
+    ];
+    private themes: string[] = [
+      "Red",
+      "Blue",
+      "Indigo",
+      "Morning",
+      "Brooklyn",
+      "Sunset",
+    ];
+  
+    // Name pool
+    private namePool: string[] = [];
+    private maxPoolSize: number;
+  
+    // Private constructor to enforce singleton
+    private constructor(maxPoolSize: number) {
+      this.maxPoolSize = maxPoolSize;
+      this.generateNamePool();
+    }
+  
+    // Public method to get the singleton instance
+    public static getInstance(maxPoolSize = 100000): ScooterNameGenerator {
+      if (!ScooterNameGenerator.instance) {
+        ScooterNameGenerator.instance = new ScooterNameGenerator(maxPoolSize);
+      }
+      return ScooterNameGenerator.instance;
+    }
+  
+    // Generate the name pool
+    private generateNamePool(): void {
+      const uniqueNames = new Set<string>();
+      while (uniqueNames.size < this.maxPoolSize) {
+        const adjective = this.randomChoice(this.adjectives);
+        const noun = this.randomChoice(this.nouns);
+        const theme = this.randomChoice(this.themes);
+        uniqueNames.add(`${adjective}-${theme}-${noun}`);
+      }
+      this.namePool = Array.from(uniqueNames);
+    }
+  
+    // Helper to get a random item from an array
+    private randomChoice<T>(array: T[]): T {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+  
+    // Public method to get a name from the pool
+    public popName(): string {
+      if (this.namePool.length === 0) {
+        throw new Error("Name pool exhausted! Please refill.");
+      }
+      return this.namePool.pop()!;
+    }
+  
+    // Public method to get the remaining size of the pool
+    public getPoolSize(): number {
+      return this.namePool.length;
+    }
+  
+    // Refill the name pool
+    public refill(): void {
+      this.generateNamePool();
+    }
+  }
