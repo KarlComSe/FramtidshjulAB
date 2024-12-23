@@ -5,5 +5,5 @@ export interface BikeAPIDto {
     batteryLevel?: number;
     latitude?: number;
     longitude?: number;
-    status: BikeStatus;
+    status: BikeStatus | undefined;
 }
