@@ -4,6 +4,7 @@
 	import { bikeStore } from '$lib/stores/bikeStore.svelte';
 	import BatterySlider from '$lib/components/BatterySlider.svelte';
 	import { bikeSyncService } from '$lib/services/bikeSync';
+    import { BrowserGPS } from '$lib/providers/BrowserGPS';
 
 	let selectedBikeId = $derived(bikeStore.selectedBikeId);
 	let selectedBike = $derived(bikeStore.selectedBike());
@@ -39,8 +40,6 @@
 	<BikeSelector />
 	{#if selectedBike}
 		<pre>{selectedBike?.toString()}</pre>
-		<p>Battery Level: {selectedBike.batteryLevel}%</p>
-		<p>Battery status: {selectedBike.batteryStatus ?? 'Unknown'}</p>
 	{/if}
 	<BatterySlider />
   <div>
@@ -53,7 +52,13 @@
 	  { syncOngoing ? 'Stop sync' : 'Start sync' }
 	</button>
 
-
+	{#if selectedBikeId}
+	<button 
+	  class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors duration-300"
+	  onclick={() => bikeStore.setGPSProvider(selectedBikeId, new BrowserGPS())}>
+	  Start GPS
+	</button>
+	{/if}
 
 
 </div>

@@ -3,17 +3,19 @@ import { BatteryStatus } from '../types/BatteryStatus';
 import type { BikeStatus } from '../types/BikeStatus';
 import type { BikeType } from '../types/Bike';
 import type { BikeAPIDto } from '$lib/types/BikeAPIDto';
+import type { Position } from '$lib/types/Position';
 
 
 export class Bike implements BikeType {
-    id: string;
-    status: BikeStatus;
-    batteryLevel: number;
-    speed: number | undefined;
-    latitude: number | undefined;
-    longitude: number | undefined;
-    renter: string | undefined;
-    name: string | undefined;
+    id = $state('');
+    status = $state<BikeStatus | undefined>(undefined);
+    batteryLevel = $state(0);
+    speed = $state<number | undefined>(undefined);
+    latitude = $state<number | undefined>(undefined);
+    longitude = $state<number | undefined>(undefined);
+    renter = $state<string | undefined>(undefined);
+    name = $state<string | undefined>(undefined);
+    gpsPosition = $state<Position | undefined>(undefined);
 
     constructor(data: BikeAPIDto) {
         if (!data.id || !data.status || data.batteryLevel === undefined) {
@@ -50,9 +52,10 @@ export class Bike implements BikeType {
         this.renter = undefined;
     }
 
-    updateLocation(latitude: number, longitude: number) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    updateLocation(position: Position) {
+        this.latitude = position.lat;
+        this.longitude = position.lng;
+        this.gpsPosition = position;
     }
 
     updateStatus(status: BikeStatus) {
@@ -67,22 +70,18 @@ export class Bike implements BikeType {
         this.speed = speed;
     }
     toString() {
-        // Call the derived values to get their current values
-        // it is working without this current... but it isn't working smoothly
-        const currentBatteryStatus = this.batteryStatus;
-        const currentMoving = this.moving;
 
         return `Bike {
     id: ${this.id},
     status: ${this.status},
     batteryLevel: ${this.batteryLevel},
-    batteryStatus: ${currentBatteryStatus},
+    batteryStatus: ${this.batteryStatus},
     speed: ${this.speed},
-    moving: ${currentMoving},
+    moving: ${this.moving},
     latitude: ${this.latitude},
     longitude: ${this.longitude},
     renter: ${this.renter},
-    name: ${this.name}
-}`;
+    name: ${this.name}}`;
+
     }
 }
