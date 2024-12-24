@@ -25,14 +25,15 @@ cd SvenskaElsparkcyklarAB
   - Send updates to the server with the bike sync service. ==> done
   - Update GPS position of bike every x-seconds.
     - Get geolocation data ==> Done
-    - Run simulated GPS data
-    - Possibility to mock with simple text fields
+    - Run simulated GPS data ==> Done
+    - Possibility to mock with simple text fields ==> Will be deferred
 - Implement the trip store
-  - Stop button / start buttons
+  - Stop button / start buttons ==> Next step
   - Display trip data in the log screen
 - Implement the speed zone service
 - Implement the speed/moving/stationary logic ==> Done
 - Testing :| ?
+- Clean the README
 
 ## Enhancements
 
