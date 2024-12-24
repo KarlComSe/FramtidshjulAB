@@ -24,15 +24,16 @@ cd SvenskaElsparkcyklarAB
 - Report of position : to implement this, there is a need to:
   - Send updates to the server with the bike sync service. ==> done
   - Update GPS position of bike every x-seconds.
-    - Get geolocation data
-    - Run simulated GPS data
-    - Possibility to mock with simple text fields
+    - Get geolocation data ==> Done
+    - Run simulated GPS data ==> Done
+    - Possibility to mock with simple text fields ==> Will be deferred
 - Implement the trip store
-  - Stop button / start buttons
+  - Stop button / start buttons ==> Next step
   - Display trip data in the log screen
 - Implement the speed zone service
-- Implement the speed/moving/stationary logic
+- Implement the speed/moving/stationary logic ==> Done
 - Testing :| ?
+- Clean the README
 
 ## Enhancements
 
@@ -56,8 +57,8 @@ SCRUTINIZER COVERAGE BADGE
 
 ## Requirements
 - [x] This program is intended to run in each bike and control/monitor it.
-- [ ] The bike reports its position at regular intervals.
-- [ ] The bike reports whether it is moving or stationary and its speed.
+- [x] The bike reports its position at regular intervals.
+- [x] The bike reports whether it is moving or stationary and its speed.
 - [ ] It should be possible to turn off/stop a bike so that it can no longer be ridden.
 - [ ] When a customer rents the bike, it is possible to start and ride it.
 - [ ] The customer can return a bike and relinquish control over it.

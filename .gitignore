@@ -38,3 +38,5 @@ coverage
 # Build output
 /dist
 /static/build
+
+gitdiff.txt

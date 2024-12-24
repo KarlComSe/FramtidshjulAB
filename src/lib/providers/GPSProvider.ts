@@ -23,6 +23,9 @@ export abstract class GPSProvider {
         const lon1 = lastPosition.lng;
         const lat2 = position.lat;
         const lon2 = position.lng;
+
+        if (!position.timestamp || !lastPosition.timestamp) return 0;
+
         const timeMs = position.timestamp - lastPosition.timestamp;
 
         const R = 6371e3; 
