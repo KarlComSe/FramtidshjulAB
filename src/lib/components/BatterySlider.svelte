@@ -30,18 +30,32 @@
 
 			bikeStore.addOrUpdateBike(updatedBike);
 		}
+		
 	}
+
+	function getBatteryColor(level: number): string {
+        if (level > 70) return 'text-green-500';
+        if (level > 30) return 'text-yellow-500';
+        return 'text-red-500';
+    }
 </script>
 
-<!-- Only show slider if a bike is selected -->
 {#if selectedBike}
-	<label for="battery-slider">Battery Level: {selectedBike.batteryLevel}%</label>
-	<input
-		id="battery-slider"
-		type="range"
-		min="0"
-		max="100"
-		value={selectedBike.batteryLevel}
-		oninput={handleSliderChange}
-	/>
+    <div class="bg-white rounded-lg shadow-md p-4 my-2">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-600">Battery Level</span>
+            <span class="text-sm font-medium {getBatteryColor(selectedBike.batteryLevel)}">
+                {selectedBike.batteryLevel}%
+            </span>
+        </div>
+        <input
+            id="battery-slider"
+            type="range"
+            min="0"
+            max="100"
+            value={selectedBike.batteryLevel}
+            oninput={handleSliderChange}
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+        />
+    </div>
 {/if}
