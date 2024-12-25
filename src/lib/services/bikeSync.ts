@@ -15,6 +15,23 @@ import type { BikeType } from "$lib/types/Bike";
 
 export class BikeSyncService {
     private bikeStore: BikeStore;
+    private subscribers: Map<string, Set<(status: boolean) => void>> = new Map();
+
+    subscribe(bikeId: string, callback: (status: boolean) => void): () => void {
+        if (!this.subscribers.has(bikeId)) {
+          this.subscribers.set(bikeId, new Set());
+        }
+        this.subscribers.get(bikeId)!.add(callback);
+        
+        callback(this.isSyncRunning(bikeId));
+    
+        return () => {
+          this.subscribers.get(bikeId)?.delete(callback);
+          if (this.subscribers.get(bikeId)?.size === 0) {
+            this.subscribers.delete(bikeId);
+          }
+        };
+      }
 
     constructor(bikeStore: BikeStore) {
         this.bikeStore = bikeStore;
@@ -31,6 +48,8 @@ export class BikeSyncService {
         this.intervals.set(bikeId, setInterval(() => {
             this.syncBike(bikeId);
         }, interval));
+
+        this.subscribers.get(bikeId)?.forEach(callback => callback(this.isSyncRunning(bikeId)));
     }
 
     stopSync(bikeId: string) {
@@ -40,6 +59,7 @@ export class BikeSyncService {
         }
         clearInterval(interval);
         this.intervals.delete(bikeId);
+        this.subscribers.get(bikeId)?.forEach(callback => callback(this.isSyncRunning(bikeId)));
     }
 
     private syncBike(bikeId: string) {

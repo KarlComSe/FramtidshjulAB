@@ -37,7 +37,7 @@
       const L = (await import('leaflet')).default;
 
       // Initialize map
-      map = L.map(mapElement).setView([position.lat, position.lng], 13);
+      map = L.map(mapElement).setView([position.lat, position.lng], 18);
 
       // Add tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

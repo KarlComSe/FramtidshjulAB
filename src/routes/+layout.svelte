@@ -28,15 +28,18 @@
 	});
 </script>
 
-<div class="container mx-auto p-4">
-	<nav class="mb-8">
-		<ul class="flex gap-4">
-			<li><a href="/" class="hover:underline">Home</a></li>
-			<li><a href="/map" class="hover:underline">Map</a></li>
-			<li><a href="/simulate" class="hover:underline">Simulate</a></li>
-			<li><a href="/about" class="hover:underline">About</a></li>
-		</ul>
-	</nav>
+<div class="flex p-3 justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-screen-xl p-6 bg-white rounded-lg shadow-md">
+		<nav class="mb-6">
+			<ul class="flex justify-start gap-6 text-lg font-bold text-gray-700">
+				<li><a href="/" class="hover:underline hover:text-blue-500 transition">Home</a></li>
+				<li><a href="/map" class="hover:underline hover:text-blue-500 transition">Map</a></li>
+				<li><a href="/simulate" class="hover:underline hover:text-blue-500 transition">Simulate</a></li>
+				<li><a href="/about" class="hover:underline hover:text-blue-500 transition">About</a></li>
+			</ul>
+		</nav>
+		<main>
+			{@render children()}
+		</main>	
+	</div>
 </div>
-
-{@render children()}
