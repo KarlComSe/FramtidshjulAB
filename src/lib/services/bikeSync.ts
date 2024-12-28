@@ -70,7 +70,7 @@ export class BikeSyncService {
             return;
         }
 
-        this.syncBikeData(bike);
+        this.syncBikePosition(bike);
     }
 
     private async syncBikeData(bike: BikeType) {
@@ -88,6 +88,27 @@ export class BikeSyncService {
             }
         } catch (error) {
             console.error(`Error syncing bike ${bike.id}:`, error);
+        }
+    }
+
+    private async syncBikePosition(bike: BikeType) {
+        try {
+            const response = await fetch(`${BACKEND_URL}/bike/${bike.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    latitude: bike.latitude,
+                    longitude: bike.longitude,
+                }),
+            });
+
+            if (!response.ok) {
+                console.error(`Failed to sync bike ${bike.id} position: ${response.statusText}`);
+            } else {
+                console.info(`Bike ${bike.id} position synced successfully.`);
+            }
+        } catch (error) {
+            console.error(`Error syncing bike ${bike.id} position:`, error);
         }
     }
 
