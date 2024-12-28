@@ -1,9 +1,10 @@
 import { BACKEND_URL } from '../../config';
 import { BatteryStatus } from '../types/BatteryStatus';
-import type { BikeStatus } from '../types/BikeStatus';
+import { BikeStatus } from '../types/BikeStatus';
 import type { BikeType } from '../types/Bike';
 import type { BikeAPIDto } from '$lib/types/BikeAPIDto';
 import type { Position } from '$lib/types/Position';
+import { BikeRentService } from '$lib/services/BikeRent';
 
 
 export class Bike implements BikeType {
@@ -16,9 +17,14 @@ export class Bike implements BikeType {
     renter = $state<string | undefined>(undefined);
     name = $state<string | undefined>(undefined);
     gpsPosition = $state<Position | undefined>(undefined);
+    isEquipmentOn = $state(true);
+    isTravelling = $state(false);
 
     constructor(data: BikeAPIDto) {
         if (!data.id || !data.status || data.batteryLevel === undefined) {
+            console.log(data.id); // undefined
+            console.log(data.status); // rented
+            console.log(data.batteryLevel); // undefined
             throw new Error("Missing required properties");
         }
         this.id = data.id;
@@ -44,12 +50,23 @@ export class Bike implements BikeType {
         return this.speed !== undefined && this.speed > 0.5;
     });
 
-    startRide(renter: string) {
-        this.renter = renter;
+    async startRide() {
+        if(!this.isEquipmentOn) {
+            throw new Error('Cannot start ride : equipment is off');
+        }
+
+        if(this.status !== BikeStatus.Rented || this.renter === undefined) {
+            await BikeRentService.startBike(this.id);
+        }
+
+        this.isTravelling = true;
+        
     }
 
-    endRide() {
+    async endRide() {
         this.renter = undefined;
+        this.status = BikeStatus.Available;
+        await BikeRentService.stopRent(this.id);
     }
 
     updateLocation(position: Position) {
@@ -69,6 +86,11 @@ export class Bike implements BikeType {
     updateSpeed(speed: number) {
         this.speed = speed;
     }
+
+    async toggleIsTravelling() {
+        this.isTravelling = !this.isTravelling;
+    }
+
     toString() {
 
         return `Bike {
@@ -84,4 +106,10 @@ export class Bike implements BikeType {
     name: ${this.name}}`;
 
     }
+
+    toggleEquipment() {
+        this.isEquipmentOn = !this.isEquipmentOn;
+        !this.isEquipmentOn ? this.isTravelling = false : null; 
+    }
+
 }

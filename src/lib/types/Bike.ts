@@ -12,5 +12,11 @@ export interface BikeType extends BikeAPIDto {
     name?: string;
     gpsProvider?: GPSProvider;
     gpsPosition?: Position;
+    isEquipmentOn: boolean;
+    isTravelling: boolean;
+    toggleEquipment(): void;
     toString(): string;
+    toggleIsTravelling(): void;
+    startRide(): void;
+    endRide(): void;
 }

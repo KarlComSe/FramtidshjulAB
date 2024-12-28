@@ -23,6 +23,8 @@
 	}
 
 	const showLowBatteryWarning = $derived(selectedBike.batteryLevel < 20);
+	const isEquipmentOn = $derived(selectedBike.isEquipmentOn);
+	const isTravelling = $derived(selectedBike.isTravelling);
 	let syncStatus = $state(false);
 
 	$effect(() => {
@@ -37,14 +39,34 @@
 	});
 </script>
 
-<div class="bg-white rounded-lg shadow-md p-4">
-	<div class="flex justify-between items-center my-2">
+<div class="bg-white rounded-lg shadow-md p-4 my-2">
+	<div class="flex justify-between items-center">
 		<div class="text-lg font-semibold text-gray-800 py-2">Vald cykel</div>
-		{#if showLowBatteryWarning}
-			<div class="bg-red-100 text-red-800 rounded-lg p-2">
-				<span class="font-semibold">Lågt batteri!</span>
-			</div>
-		{/if}
+		<div class="flex gap-2">
+			{#if showLowBatteryWarning}
+				<div class="bg-red-100 text-red-800 rounded-lg p-2">
+					<span class="font-semibold">Lågt batteri!</span>
+				</div>
+			{/if}
+			{#if isTravelling}
+				<div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+					<span class="font-semibold">Startad</span>
+				</div>
+			{:else}
+				<div class="bg-gray-100 text-gray-800 p-2 rounded-lg">
+					<span class="font-semibold">Pausad</span>
+				</div>
+			{/if}
+			{#if isEquipmentOn}
+				<div class="bg-green-100 text-green-800 p-2 rounded-lg">
+					<span class="font-semibold">På</span>
+				</div>
+			{:else}
+				<div class="bg-red-100 text-red-800 rounded-lg p-2">
+					<span class="font-semibold">Av</span>
+				</div>
+			{/if}
+		</div>
 	</div>
 
 	<div class="space-y-3">
@@ -120,16 +142,18 @@
 
 		<!-- ID at bottom -->
 		<div class="border-t border-gray-100 pt-3">
-			<div class="grid grid-cols-2 gap-2">				
+			<div class="grid grid-cols-2 gap-2">
 				<div class="text-xs text-gray-500">
-					ID: <span class="font-mono"
-						>{selectedBike.id}</span>
+					ID: <span class="font-mono">{selectedBike.id}</span>
 				</div>
 				<div class="text-xs text-gray-500 justify-self-end">
 					{#if syncStatus}
-						<span class="font-semibold text-green-500">Syncing</span>
+						<span class="font-semibold text-green-500">Syncing</span
+						>
 					{:else}
-						<span class="font-semibold text-red-500">Not syncing</span>
+						<span class="font-semibold text-red-500"
+							>Not syncing</span
+						>
 					{/if}
 				</div>
 			</div>

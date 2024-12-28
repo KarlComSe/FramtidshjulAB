@@ -1,7 +1,8 @@
 <script lang="ts">
+    import Toaster from '$lib/components/Toaster.svelte';
+    import { setupGlobalErrorHandler } from '$lib/errorHandler';
 	import { Bike } from '$lib/models/bike.svelte';
 	import { bikeStore } from '$lib/stores/bikeStore.svelte';
-  import { bikeSyncService } from '$lib/services/bikeSync';
 	import type { BikeAPIDto } from '$lib/types/BikeAPIDto';
 	import '../app.css';
 	import { BACKEND_URL } from '../config';
@@ -25,6 +26,7 @@
 
 	$effect(() => {
 		initializeBikes();
+		setupGlobalErrorHandler();
 	});
 </script>
 
@@ -40,6 +42,7 @@
 		</nav>
 		<main>
 			{@render children()}
+			<Toaster />
 		</main>	
 	</div>
 </div>

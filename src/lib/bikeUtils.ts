@@ -1,4 +1,4 @@
-import type { BikeAPIDto } from './types/BikeAPIDto';
+import type { BikeAPIDto } from '$lib//types/BikeAPIDto';
 import type { BikeType } from '$lib/types/Bike';
 import { Bike } from '$lib/models/bike.svelte';
 import type { BikePatchAPIDto } from './types/BikePatchAPIDto';
