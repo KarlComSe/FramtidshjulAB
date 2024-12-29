@@ -7,6 +7,8 @@
 	import '../app.css';
 	import { BACKEND_URL } from '../config';
 	let { children } = $props();
+
+	let bikesInitialized = $state(false);
 	async function initializeBikes() {
 		try {
 			const response = await fetch(`${BACKEND_URL}/bike`);
@@ -16,7 +18,8 @@
 				const bike = new Bike(bikeData);
 				bikeStore.addOrUpdateBike(bike);
 			});
-
+			bikesInitialized = true; 
+			
 			return true;
 		} catch (err) {
 			console.error('Failed to load bikes:', err);
@@ -40,9 +43,13 @@
 				<li><a href="/about" class="hover:underline hover:text-blue-500 transition">About</a></li>
 			</ul>
 		</nav>
-		<main>
-			{@render children()}
-			<Toaster />
-		</main>	
+        <main>
+            {#if bikesInitialized}
+                {@render children()} <!-- Render children only when bikes are loaded -->
+            {:else}
+                <p>Loading bikes...</p>
+            {/if}
+            <Toaster />
+        </main>    
 	</div>
 </div>
