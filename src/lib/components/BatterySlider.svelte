@@ -11,26 +11,9 @@
 		const slider = event.target as HTMLInputElement;
 
 		if (selectedBike) {
-			// Create a proper BikeAPIDto
-			const bikeData: BikeAPIDto = {
-				id: selectedBike.id,
-				status: selectedBike.status,
-				batteryLevel: parseInt(slider.value, 10),
-				latitude: selectedBike.latitude,
-				longitude: selectedBike.longitude
-			};
-
-			// Create a new Bike instance
-			const updatedBike = new Bike(bikeData);
-
-			// Update other properties that aren't in the DTO
-			updatedBike.renter = selectedBike.renter;
-			updatedBike.name = selectedBike.name;
-			updatedBike.speed = selectedBike.speed;
-
-			bikeStore.addOrUpdateBike(updatedBike);
+			selectedBike.batteryLevel = parseInt(slider.value, 10);
+			bikeStore.addOrUpdateBike(selectedBike);
 		}
-		
 	}
 
 	function getBatteryColor(level: number): string {

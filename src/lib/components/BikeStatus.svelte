@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Bike } from "$lib/models/bike.svelte";
-	import { bikeSyncService } from "$lib/services/bikeSync";
+	import { bikeSyncService } from "$lib/services/bikeSync.svelte";
 
 	// Styling and helper function geenrated partially by AI
 

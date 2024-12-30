@@ -16,6 +16,7 @@ import type { BikeType } from "$lib/types/Bike";
 export class BikeSyncService {
     private bikeStore: BikeStore;
     private subscribers: Map<string, Set<(status: boolean) => void>> = new Map();
+    private intervals = $state(new Map<string, number>());
 
     subscribe(bikeId: string, callback: (status: boolean) => void): () => void {
         if (!this.subscribers.has(bikeId)) {
@@ -37,29 +38,43 @@ export class BikeSyncService {
         this.bikeStore = bikeStore;
     }
 
-    private intervals = new Map<string, number>();
 
     startSync(bikeId: string, interval: number = 2000) {
+        console.log('Starting sync for bike:', bikeId);
         if (this.intervals.has(bikeId)) {
             console.warn(`Sync for bike ${bikeId} is already running. Restarting with new interval.`);
-            this.stopSync(bikeId);
+            return;
         }
 
-        this.intervals.set(bikeId, setInterval(() => {
+        const newIntervals = new Map(this.intervals);
+        newIntervals.set(bikeId, setInterval(() => {
             this.syncBike(bikeId);
         }, interval));
+        this.intervals = newIntervals;
 
         this.subscribers.get(bikeId)?.forEach(callback => callback(this.isSyncRunning(bikeId)));
+        console.log('Current intervals after start:', Array.from(this.intervals.keys()));
     }
 
     stopSync(bikeId: string) {
+        console.log('Stopping sync for bike:', bikeId);
         const interval = this.intervals.get(bikeId);
         if (!interval) {
             throw new Error(`Sync for bike ${bikeId} is not running`);
         }
+        
+        // Clear the actual interval
         clearInterval(interval);
-        this.intervals.delete(bikeId);
-        this.subscribers.get(bikeId)?.forEach(callback => callback(this.isSyncRunning(bikeId)));
+        
+        // Update the intervals Map
+        const newIntervals = new Map(this.intervals);
+        newIntervals.delete(bikeId);
+        this.intervals = newIntervals;
+    
+        this.subscribers.get(bikeId)?.forEach(callback => 
+            callback(this.isSyncRunning(bikeId))
+        );
+        console.log('Current intervals after stop:', Array.from(this.intervals.keys()));
     }
 
     private syncBike(bikeId: string) {
@@ -118,6 +133,12 @@ export class BikeSyncService {
 
     getRunningSyncs(): string[] {
         return Array.from(this.intervals.keys());
+    }
+
+    cleanup() {
+        this.intervals.forEach((interval, bikeId) => {
+            this.stopSync(bikeId);
+        });
     }
 }
 

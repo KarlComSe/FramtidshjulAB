@@ -7,24 +7,17 @@
  */
 import type { BikeType } from "$lib/types/Bike";
 import { GPSProvider } from "$lib/providers/GPSProvider";
-import { readable } from "svelte/store";
 import { Bike } from "$lib/models/bike.svelte";
+// import { bikeSyncService } from "$lib/services/bikeSync.svelte";
 
 export class BikeStore {
     bikes = $state<Map<string, BikeType>>(new Map());
     private gpsProviders = new Map<string, GPSProvider>();
     private gpsTimeoutCheckers = new Map<string, number>();
 
-    bikesStore = readable(this.bikes, (set) => {
-        $effect(() => {
-            set(this.bikes); // Notify Svelte of state changes
-        });
-    });
-
     selectedBikeId = $state<string | null>(null);
 
     addOrUpdateBike(bike: BikeType) {
-        console.log(bike);
         const properBike = bike instanceof Bike ? bike : new Bike(bike);
         this.bikes = new Map(this.bikes).set(properBike.id, properBike);
     }
@@ -50,20 +43,18 @@ export class BikeStore {
         this.stopGPSProvider(bikeId);
         console.log('Starting GPS provider for bike', bikeId);
 
-        provider.startUpdate( (position) => {
+        provider.startUpdate((position) => {
             console.log('New position', position);
             const bike = this.bikes.get(bikeId);
 
             if (!provider.validatePosition(position)) {
                 console.warn('Invalid position', position);
-                console.log('Valid position is between -90 and 90 for latitude and -180 and 180 for longitude');
                 return;
             }
 
-            if (bike instanceof Bike) { 
+            if (bike instanceof Bike) {
                 console.log('Updating bike position');
                 const lastPosition = bike.gpsPosition;
-                console.log('Last position', lastPosition);
                 bike.updateLocation(position);
                 if (lastPosition) {
                     bike.updateSpeed(provider.calculateSpeed(lastPosition, position));
@@ -99,6 +90,9 @@ export class BikeStore {
         for (const bikeId of this.gpsProviders.keys()) {
             this.stopGPSProvider(bikeId);
         }
+
+        // bikeSyncService.cleanup();
+        
         this.bikes = new Map();
         this.selectedBikeId = null;
     }
