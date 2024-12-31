@@ -6,7 +6,7 @@ import type { Position } from '$lib/types/Position';
 export interface BikeType extends BikeAPIDto {
     id: string;
     speed?: number;
-    renter?: string;
+    renter?: string | undefined;
     readonly batteryStatus: BatteryStatus;
     readonly moving: boolean;
     name?: string;

@@ -1,6 +1,6 @@
 
 export interface TripDto {
-    id: string;
+    tripId: string;
     bikeId: string;
     renter: string;
     startTime: string;
