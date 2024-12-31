@@ -1,6 +1,9 @@
 # Framtidshjul AB - electrical scooter control emulator (ESCe) project
 
-## Development setup 
+
+## Installing, deploying and running the application
+
+### Development setup 
 **Prereq:**
 * Docker and Docker Compose
 * Repo cloned / initiated
@@ -10,8 +13,42 @@
 
 Server is now available at http://localhost:5174
 
+### Installation (Standard Svelte: manual setup)
+**Prereq:**
+- Node.js
+- npm
 
-## Initiate the repository
+Clone the repository and install the dependencies:
+```bash
+npm install
+```
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+### Building (Standard Svelte)
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+### Installation (Docker)
+
+TBD
+
+### Deployment (Docker compose)
+
+TBD
+
+### Initiate the repository
 
 Create a folder for the repo and initiate the git repository with the following commands:
 
@@ -19,21 +56,26 @@ Create a folder for the repo and initiate the git repository with the following 
 git clone git@github.com:KarlComSe/FramtidshjulAB.git
 cd SvenskaElsparkcyklarAB
 ```
+
 ## Todo / focus
+
+- Implement the speed zone service (remote or local calculations?)
+- Beautify the trip log
+- Testing, code quality metrics, eslint, prettier? :| ?
+- Clean the README
+-- Fix the deployment section
+
 
 - Report of position : to implement this, there is a need to:
   - Send updates to the server with the bike sync service. ==> done
-  - Update GPS position of bike every x-seconds.
+  - Update GPS position of bike every x-seconds. 
     - Get geolocation data ==> Done
     - Run simulated GPS data ==> Done
     - Possibility to mock with simple text fields ==> Will be deferred
 - Implement the trip store
-  - Stop button / start / return buttons ==> Next step
-  - Display trip data in the log screen
-- Implement the speed zone service
+  - Stop button / start / return buttons ==> Done
+  - Display trip data in the log screen ==> Done
 - Implement the speed/moving/stationary logic ==> Done
-- Testing :| ?
-- Clean the README
 
 ## Enhancements
 
@@ -59,12 +101,12 @@ SCRUTINIZER COVERAGE BADGE
 - [x] This program is intended to run in each bike and control/monitor it.
 - [x] The bike reports its position at regular intervals.
 - [x] The bike reports whether it is moving or stationary and its speed.
-- [ ] It should be possible to turn off/stop a bike so that it can no longer be ridden.
-- [ ] When a customer rents the bike, it is possible to start and ride it.
-- [ ] The customer can return a bike and relinquish control over it.
-- [ ] The bike warns when it needs to be charged.
-- [ ] The bike saves a log of its trips with start (location, time) and end (location, time) as well as the customer.
-- [ ] When the bike is taken in for maintenance or charging, it is marked as being in maintenance mode. A bike that is charging at a charging station cannot be rented by a customer and a red light indicates that it is not available.
+- [x] It should be possible to turn off/stop a bike so that it can no longer be ridden.
+- [x] When a customer rents the bike, it is possible to start and ride it.
+- [x] The customer can return a bike and relinquish control over it.
+- [x] The bike warns when it needs to be charged.
+- [x] The bike saves a log of its trips with start (location, time) and end (location, time) as well as the customer.
+- [x] When the bike is taken in for maintenance or charging, it is marked as being in maintenance mode. A bike that is charging at a charging station cannot be rented by a customer and a red light indicates that it is not available.
 
 ## Implementation
 - The ESCe is represented as a Single Page Application (SPA) that runs in a web browser.
@@ -76,13 +118,9 @@ SCRUTINIZER COVERAGE BADGE
 
 ## General structure
 
-The bike keeps an internal state, which partially and periodically is sent as an external state. The state is saved in the local storage. 
+The bike keeps an internal state, which partially and periodically is sent as an external state. Part of the state is saved in the local storage (trip log). 
 
 The update of internal state is triggered by user interaction or by the GPS position. The update of external state is triggered by user actions or by a set interval.
-
-- External state:
-  - startUpdate(bikeId, interval)
-  - stopUpdate(bikeId) 
 
 ## Requirements implementation 
 
@@ -92,6 +130,10 @@ The user has 2 main screens:
 
 1. Bike screen: User can select bike, get bike information, and interact with the bike.
 2. Log screen: User can view the log of trips for current emulator session.
+
+Additional screen:
+
+- Map and simulation screen: Possible to watch and play with multiple bikes. Built as a way to test the complete application, end 2 end. 
 
 ### Selecting a bike:
 
@@ -117,29 +159,28 @@ When a bike is selected, the user is presented with the following information:
 - The user can interact with the bike as if it were a real bike.
 - The user can:
   - Start/stop the bike.
-  - ~~Rent~~/return the bike.
-  - View the bike's log of trips.
+  - Return the bike.
+  - View the bike's log of trips. (Likely only for technicians in reality)
 
 __*Start the bike*__: The user can only start the bike if it is rented. The bike will check that it is rented and save the customer id of the renter.
 
-- Internal state: Save {bike-id}: renter id, pos and start-time.
-- External state: Report bike/{id} : start-time, start-pos.
+- Internal state: Save {bike-id}: renter id, pos and start-time in log (if not already saved). Set status to "Startad".
+- External state: No update is being made. The update in external state is triggered in customer app.
 
 __*Stop the bike*__: The user can stop the bike at any time. When the bike is stopped, the location will not be updated and the bike will be considered stationary. If a simulated GPS is used, the bike will stop moving.
 
-- Internal state: Stop updating position / read recorded GPS-file, {bike-id}: speed = 0, isMoving = false.  
+- Internal state: Set status to "Pausad". GPS position will keep being updated, even if bike is paused, this doesn't hinder someone from running with the bike...
 - External state: N/A.
 
 __*Return the bike*__: The user can return the bike at any time. When the bike is returned, the GPS position is saved to a log, along with the customer id and the time. 
 
-- Internal state: Save {bike-id}: renter id, pos and stop-time.
-- External state: Report bike/{id} : stop-time, stop-pos.
+- Internal state: Save {bike-id}: renter id, pos and stop-time in log. Update bike status to available.
+- External state: Stop active bike rental.
 
 ### Logging trips in bike memory
 
 - The bike saves a log of its trips with start (location, time) and end (location, time) as well as the customer.
-- When the start button is pressed, the bike saves the start time and position, and the renter, if it isn't already saved, and communicates the same to the server.
-- When the return button is pressed, the bike saves the stop time and position, and communicates the same to the server, and asks the state of the bike to be updated.
+- When the return button is pressed, the bike saves the stop time and position in the log.
 
 #### Example Trip Log
 
@@ -160,66 +201,12 @@ __*Return the bike*__: The user can return the bike at any time. When the bike i
 - Internal state: Save {bike-id}: pos, timestamp.
 - External state: Report bike/{id} : pos, timestamp.
 
-Pseudocode:
-```javascript
-
-watchPosition(callback, options);
-
-// this is initiated by the user, then the callback is continuously updating the bike data
-navigator.geolocation.watchPosition(callback, options? errorCallback?);
-
-// the bike's current position is sent to the server every x millisecond
-if bike is selected and GPS position is available:
-    every x ms:
-        sendPositionToServer(bike.position);
-
-```
-
 ### Determine if moving / stationary and calculate speed
 
 The speed is calculated from the distance between two consecutive GPS coordinates and the time between them. The bike is considered stationary if the speed is below 0.5 km/h.
 
 - Internal state: Save {bike-id}: isMoving, speed.
 - External state: N/A.
-
-Pseudocode:
-```javascript
-
-if bike is selected and GPS position is available:
-    every 1000 ms:
-        bike.speed = calculateSpeed();
-        if speed < 0.5 km/h:
-            bike.isMoving = false
-        else:
-            bike.isMoving = true
-
-function calculateSpeed():
-    // need to decide on position format
-    distance = distance(bike.position, newGPSPosition);
-    time = calculateTime(bike.position.timestamp, newGPSPosition.timestamp);
-    speed = distance / time;
-    return speed;
-
-//https://jsperf.app/haversine-salvador/32
-function distance(lat1, lon1, lat2, lon2) {
-  var deg2rad = 0.017453292519943295; // === Math.PI / 180
-  var cos = Math.cos;
-  lat1 *= deg2rad;
-  lon1 *= deg2rad;
-  lat2 *= deg2rad;
-  lon2 *= deg2rad;
-  var diam = 12742; // Diameter of the earth in km (2 * 6371)
-  var dLat = lat2 - lat1;
-  var dLon = lon2 - lon1;
-  var a = (
-    (1 - cos(dLat)) +
-    (1 - cos(dLon)) * cos(lat1) * cos(lat2)
-  ) / 2;
-
-  return diam * Math.asin(Math.sqrt(a));
-}
-
-```
 
 ### Determine speed zone
 
@@ -252,7 +239,7 @@ function getSpeedZone(position):
 
 QRCode - for generating QR-codes
 Turf.js - for intersection of polygons
-uuid - for generating unique ids (can use browswer function instead?)
+uuid - for generating unique ids (can use browswer function instead?) ==> Not needed anymore. To be deleted.
 
 ### File and folder structure
 
@@ -282,42 +269,3 @@ Services:
 
 - gpsService
 - speedZoneService
-
-## Installing, deploying and running the application
-
-### Prerequisites
-
-- Node.js
-- npm
-
-### Installation (manual setup)
-
-Clone the repository and install the dependencies:
-```bash
-npm install
-```
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-### Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-### Installation (Docker)
-
-TBD
-
-### Deployment (Docker compose)
-
-TBD
