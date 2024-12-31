@@ -2,7 +2,7 @@
     import { BACKEND_URL } from "../../config";
     import { bikeStore } from "$lib/stores/bikeStore.svelte";
     import type { BikeType } from "$lib/types/Bike";
-    let numberOfBikes = $state(500);
+    let numberOfBikes = $state(100);
 
     function createBikes() {
         console.log(`Creating ${numberOfBikes} bikes`);
@@ -11,7 +11,8 @@
 
 
     async function createBikesInBackend() {
-        const bikes = Array(numberOfBikes).fill({});
+        const bikes = Array(numberOfBikes).fill({"latitude": 57.700000,
+        "longitude": 11.975300});
         try {
             const response = await fetch(`${BACKEND_URL}/bike/create-many`, {
                 method: 'POST',
@@ -51,7 +52,7 @@
         <input
             type="range"
             min="1"
-            max="5000"
+            max="100"
             bind:value={numberOfBikes}
         />
     </div>

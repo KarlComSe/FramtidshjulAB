@@ -21,8 +21,8 @@
     <p class="font-bold">Warning:</p>
     <p>
         This page is intended for debugging purposes only. It consumes a
-        significant amount of resources and <strong>WILL</strong> slow down your browser 
-        if there is a large number of bikes.
+        significant amount of resources and <strong>WILL</strong> slow down your
+        browser if there is a large number of bikes.
     </p>
 </div>
 <div>
@@ -81,6 +81,44 @@
             <div class="p-4 border rounded shadow">
                 <span class="font-semibold">ID:</span>
                 {bike}
+            </div>
+        {/each}
+    </div>
+</details>
+
+    <details class="mb-4">
+        <summary class="cursor-pointer text-lg font-semibold">
+            Bikes over speed limit <span class="text-blue-500">{bikesList.filter(bike => bike.speedlimit && bike.speed > bike.speedlimit).length}</span>
+        </summary>
+        <div class="grid grid-cols-1 gap-4 mt-2">
+            {#each bikesList.filter(bike => bike.speedlimit && bike.speed && bike.speed > bike.speedlimit) as bike}
+                <div class="p-4 border rounded shadow">
+                    <span class="font-semibold">ID:</span>
+                    {bike.id}
+                    <pre class="bg-gray-100 p-2 rounded mt-2">{bike.speed}</pre>
+                    <pre class="bg-gray-100 p-2 rounded mt-2">{bike.speedlimit}</pre>
+                    <pre
+                        class="bg-gray-100 p-2 rounded mt-2">{bike.latitude?.toFixed(
+                            4,
+                        )}..., {bike.longitude?.toFixed(4)}...</pre>
+                </div>
+            {/each}
+        </div>
+    </details>
+    <details>
+    <summary class="cursor-pointer text-lg font-semibold">
+        Bikes in speed zone <span class="text-blue-500">{bikesList.filter(bike => bike.speedlimit).length}</span>
+    </summary>
+    <div class="grid grid-cols-1 gap-4 mt-2">
+        {#each bikesList.filter(bike => bike.speedlimit) as bike}
+            <div class="p-4 border rounded shadow">
+                <span class="font-semibold">ID:</span>
+                {bike.id}
+                <pre class="bg-gray-100 p-2 rounded mt-2">{bike.speedlimit}</pre>
+                <pre
+                    class="bg-gray-100 p-2 rounded mt-2">{bike.latitude?.toFixed(
+                        4,
+                    )}..., {bike.longitude?.toFixed(4)}...</pre>
             </div>
         {/each}
     </div>

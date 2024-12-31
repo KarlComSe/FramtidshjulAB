@@ -243,29 +243,26 @@ uuid - for generating unique ids (can use browswer function instead?) ==> Not ne
 
 ### File and folder structure
 
-Components:
+Components
+Routes
+Models
+Services
+Stores
+Types
+Providers
 
-- BikeSelector
-- BikeInfo
-- BikeControl
-- BatterySimulator
-- QrCode
-- Log
-  - Trip snippet (1 trip)
-  - Trip list (sorting, filtering)
 
-Routes:
+## Possible feature enhancement and improvements
 
-- +page.svelte : bike screen
-- log/+page.svelte : log
+### Performance optimization
+#### Webworker
 
-Models:
+It could be interesting to offload state managemement to a webworker, e.g. the position management and syncing
 
-- Bike
-- Trip
-- Routes
+#### Batch call / Implement web sockets
 
-Services:
+There is a limitation in number of concurrent HTTP requests that is allocated by a browser to a single domain.
 
-- gpsService
-- speedZoneService
+### Refactoring
+
+...

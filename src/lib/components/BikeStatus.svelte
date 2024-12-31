@@ -140,6 +140,30 @@
 			</div>
 		</div>
 
+		<!-- Speed Limit Info -->
+		<div class="border-t border-gray-100 pt-3">
+			<div class="grid grid-cols-2 gap-2">
+				<div class="text-s justify-self-start">
+					<span class="text-gray-500">Hastighetsgräns: </span>
+					<span class="font-medium">
+						{selectedBike.speedlimit === undefined
+							? "N/A"
+							: `${selectedBike.speedlimit} km/h`}
+					</span>
+				</div>
+				<div class="text-sm justify-self-end">
+					<span class="text-gray-500">Över gränsen: </span>
+					<span class="font-medium">
+						{selectedBike.speed !== undefined && selectedBike.speedlimit !== undefined
+							? selectedBike.speed > selectedBike.speedlimit
+								? "Ja"
+								: "Nej"
+							: "N/A"}
+					</span>
+				</div>
+			</div>
+		</div>
+
 		<!-- ID at bottom -->
 		<div class="border-t border-gray-100 pt-3">
 			<div class="grid grid-cols-2 gap-2">
