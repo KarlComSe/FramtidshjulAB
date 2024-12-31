@@ -14,6 +14,7 @@ export interface BikeType extends BikeAPIDto {
     gpsPosition?: Position;
     isEquipmentOn: boolean;
     isTravelling: boolean;
+    readonly speedlimit: number | undefined;
     toggleEquipment(): void;
     toString(): string;
     toggleIsTravelling(): void;

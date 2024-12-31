@@ -17,6 +17,7 @@ export class BikeStore {
 
     selectedBikeId = $state<string | null>(null);
 
+    // it is not needed to create a new map, Svelte should be deeply reactive
     addOrUpdateBike(bike: BikeType) {
         const properBike = bike instanceof Bike ? bike : new Bike(bike);
         this.bikes = new Map(this.bikes).set(properBike.id, properBike);

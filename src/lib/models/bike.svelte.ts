@@ -5,6 +5,7 @@ import type { BikeType } from '../types/Bike';
 import type { BikeAPIDto } from '$lib/types/BikeAPIDto';
 import type { Position } from '$lib/types/Position';
 import { BikeRentService } from '$lib/services/BikeRent';
+import { speedZoneStore } from '$lib/stores/speedZoneStore.svelte';
 
 
 export class Bike implements BikeType {
@@ -32,7 +33,6 @@ export class Bike implements BikeType {
         this.batteryLevel = data.batteryLevel;
         this.latitude = data.latitude;
         this.longitude = data.longitude;
-        //this.name = ScooterNameGenerator.getInstance().popName();
     }
 
     // Use class fields with $derived
@@ -48,6 +48,10 @@ export class Bike implements BikeType {
 
     readonly moving = $derived.by(() => {
         return this.speed !== undefined && this.speed > 0.5;
+    });
+
+    readonly speedlimit = $derived.by(() => {
+        return speedZoneStore.getSpeedLimitAtPoint({ latitude: this.latitude, longitude: this.longitude }) ?? undefined;
     });
 
     async startRide() {
@@ -87,7 +91,7 @@ export class Bike implements BikeType {
         this.speed = speed;
     }
 
-    async toggleIsTravelling() {
+    toggleIsTravelling() {
         this.isTravelling = !this.isTravelling;
     }
 
@@ -99,6 +103,7 @@ export class Bike implements BikeType {
     batteryLevel: ${this.batteryLevel},
     batteryStatus: ${this.batteryStatus},
     speed: ${this.speed},
+    speedlimit: ${this.speedlimit},
     moving: ${this.moving},
     latitude: ${this.latitude},
     longitude: ${this.longitude},
