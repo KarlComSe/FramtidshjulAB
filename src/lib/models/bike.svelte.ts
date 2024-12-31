@@ -12,8 +12,8 @@ export class Bike implements BikeType {
     status = $state<BikeStatus | undefined>(undefined);
     batteryLevel = $state(0);
     speed = $state<number | undefined>(undefined);
-    latitude = $state<number | undefined>(undefined);
-    longitude = $state<number | undefined>(undefined);
+    latitude = $state<number>(0);
+    longitude = $state<number>(0);
     renter = $state<string | undefined>(undefined);
     name = $state<string | undefined>(undefined);
     gpsPosition = $state<Position | undefined>(undefined);

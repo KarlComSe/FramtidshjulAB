@@ -1,5 +1,4 @@
 <script>
-  export let data;
 </script>
 <article class="prose mx-auto p-4">
 <p>Det här är cykelns program. </p>

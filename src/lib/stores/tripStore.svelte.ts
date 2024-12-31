@@ -3,52 +3,39 @@
  * @description This file contains the TripStore class which manages the state of trips in a Svelte application. 
  * It provides methods to start and end trips, save and load trips from localStorage, and clear all trips.
  */
-
+import { browser } from '$app/environment';
 import type { TripDto } from "$lib/models/trips.svelte.ts";
-import { readable } from "svelte/store";
-import { v4 as uuidv4 } from 'uuid';
 
 export class TripStore {
 
-    trips = $state<TripDto[]>(this.load());
-
-    tripsStore = readable(this.trips, (set) => {
-        $effect(() => {
-            set(this.trips); // Notify Svelte of state changes
-        });
-    });
+    trips = $state<TripDto[]>([]);
 
     constructor() {
-        $effect(() => {
-            this.save();
-        });
+        if (browser) {
+            this.trips = this.load();
+        }
     }
 
-    startNewTrip(bikeId: string, renter: string, startLatitude: number, startLongitude: number) {
-        if (this.trips.some(trip => trip.bikeId === bikeId && !trip.endTime)) {
-            console.info(`Bike with id ${bikeId} is already in a trip. Will not add new trip.`);
-            return;
+    startNewTrip(tripId: string, bikeId: string, renter: string, startLatitude: number, startLongitude: number): string {
+        if (this.hasOngoingTrip(bikeId)) {
+            throw new Error(`Bike with id ${bikeId} is already in a trip. Will not add new trip.`);
         }
+        console.log('Starting new trip', tripId, bikeId, renter, startLatitude, startLongitude);
 
         const trip: TripDto = {
-            id: uuidv4(),
+            tripId,
             bikeId,
             renter,
             startTime: new Date().toISOString(),
             startLatitude,
             startLongitude,
         };
-        this.addTrip(trip);
-
-        return trip.id;
+        this.trips = [...this.trips, trip]
+        this.save();
+        return trip.tripId;
     }
 
-    private addTrip(trip: TripDto) {
-        this.trips = [...this.trips, trip];
-        // need to send start position and time to backend -- will be done separately ("separation of concerns")
-    }
-
-    endTrip(bikeId: string) {
+    endTrip(bikeId: string, endLatitude: number, endLongitude: number ): void {
         const trip = this.trips.find(trip => trip.bikeId === bikeId && !trip.endTime);
 
         if (!trip) {
@@ -56,40 +43,51 @@ export class TripStore {
         }
 
         trip.endTime = new Date().toISOString();
-        this.trips = this.trips.map(t => t.id === trip.id ? trip : t);
+        trip.endLatitude = endLatitude;
+        trip.endLongitude = endLongitude;
+        this.save();
     }
 
-    save() {
+    hasOngoingTrip(bikeId: string): boolean {
+        return this.trips.some(trip => trip.bikeId === bikeId && !trip.endTime);
+    }
+
+    private save() {
         localStorage.setItem('trips', JSON.stringify(this.trips));
     }
 
-    // some effort in parsing the trips from localStorage
-    load() {
+    private load(): TripDto[] {
         const trips = localStorage.getItem('trips');
-        if (trips) {
-            try {
-                const parsed = JSON.parse(trips);
-                if (Array.isArray(parsed)) {
-                    return parsed.map(trip => ({
-                        id: trip.id || uuidv4(),
-                        bikeId: trip.bikeId || '',
-                        renter: trip.renter || '',
-                        startTime: trip.startTime || new Date().toISOString(),
-                        startLatitude: trip.startLatitude || null,
-                        startLongitude: trip.startLongitude || null,
-                        endLatitude: trip.endLatitude || null,
-                        endLongitude: trip.endLongitude || null,
-                        endTime: trip.endTime || null,
-                    })) as TripDto[];
+        if (!trips) return [];
+
+        try {
+            const parsed = JSON.parse(trips) as TripDto[];;
+            if (!Array.isArray(parsed)) return [];
+
+            return parsed.map(trip => {
+                if (!trip.tripId || !trip.bikeId || !trip.renter || !trip.startTime || !trip.startLatitude || !trip.startLongitude) {
+                    console.error('Invalid trip data:', trip);
+                    throw new Error('Invalid trip data in localStorage');
                 }
-            } catch (error) {
-                console.error("Failed to parse trips from localStorage:", error);
-            }
+                return {
+                    tripId: trip.tripId,
+                    bikeId: trip.bikeId,
+                    renter: trip.renter,
+                    startTime: trip.startTime,
+                    startLatitude: trip.startLatitude,
+                    startLongitude: trip.startLongitude,
+                    endLatitude: trip.endLatitude || null,
+                    endLongitude: trip.endLongitude || null,
+                    endTime: trip.endTime || null,
+                } as TripDto;
+            });
+        } catch (error) {
+            console.error("Failed to parse trips from localStorage:", error);
+            throw error;
         }
-        return [];
     }
 
-    clear() {
+    clear(): void {
         this.trips = [];
         localStorage.removeItem('trips');
     }
