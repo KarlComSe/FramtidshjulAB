@@ -79,7 +79,7 @@
 <div class="flex p-3 justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-screen-xl p-6 bg-white rounded-lg shadow-md">
 		<nav class="mb-6">
-			<ul class="flex justify-start gap-6 text-lg font-bold text-gray-700">
+			<ul class="flex justify-start flex-wrap gap-6 text-lg font-bold text-gray-700">
 				<li><a href="/" class="hover:underline hover:text-blue-500 transition">Home</a></li>
 				<li><a href="/map" class="hover:underline hover:text-blue-500 transition">Map and simulation</a></li>
 				<li><a href="/trip-log" class="hover:underline hover:text-blue-500 transition">Trip log</a></li>
