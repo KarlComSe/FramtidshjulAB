@@ -74,8 +74,8 @@ export class Bike implements BikeType {
     }
 
     updateLocation(position: Position) {
-        this.latitude = position.lat;
-        this.longitude = position.lng;
+        this.latitude = position.lat + Math.random() * 0.0005;
+        this.longitude = position.lng + Math.random() * 0.0005;
         this.gpsPosition = position;
     }
 

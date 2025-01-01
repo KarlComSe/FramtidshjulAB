@@ -16,17 +16,8 @@
                     loop: true,
                 }),
             );
-            sleep(15);    
+            sleep(50);    
         }
-        bikes.forEach((bike) => {
-            bikeStore.setGPSProvider(
-                bike.id,
-                new MockGPS({
-                    route: MockGPS.routes[Math.floor(Math.random() * MockGPS.routes.length)],
-                    loop: true,
-                }),
-            );
-        });
     }
 
     function stopMockGPSForAllBikes() {
