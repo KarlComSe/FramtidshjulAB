@@ -54,18 +54,18 @@ Create a folder for the repo and initiate the git repository with the following 
 
 ```bash
 git clone git@github.com:KarlComSe/FramtidshjulAB.git
-cd SvenskaElsparkcyklarAB
+cd FramtidsHjulAB
 ```
 
 ## Todo / focus
 
-- Implement the speed zone service (remote or local calculations?)
-- Beautify the trip log
+
 - Testing, code quality metrics, eslint, prettier? :| ?
 - Clean the README
 -- Fix the deployment section
 
-
+- Implement the speed zone service (remote or local calculations?) ==> Done
+- Beautify the trip log ==> Done
 - Report of position : to implement this, there is a need to:
   - Send updates to the server with the bike sync service. ==> done
   - Update GPS position of bike every x-seconds. 
@@ -107,6 +107,9 @@ SCRUTINIZER COVERAGE BADGE
 - [x] The bike warns when it needs to be charged.
 - [x] The bike saves a log of its trips with start (location, time) and end (location, time) as well as the customer.
 - [x] When the bike is taken in for maintenance or charging, it is marked as being in maintenance mode. A bike that is charging at a charging station cannot be rented by a customer and a red light indicates that it is not available.
+
+## Additional features
+- [x] Geo-fencing / speed zones
 
 ## Implementation
 - The ESCe is represented as a Single Page Application (SPA) that runs in a web browser.

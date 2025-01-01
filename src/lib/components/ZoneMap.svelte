@@ -4,7 +4,8 @@
 </script>
 
 <div class="p-4 bg-gray-100 rounded-lg shadow-md">
-    <h2 class="text-xl font-bold mb-4">Fancy point map</h2>
+    <h2 class="text-xl font-bold mb-4">Polygon definition</h2>
+    <!-- Original ambition : show on a map -->
     {#if polygon}
         <ul class="list-disc list-inside">
             {#each polygon as point}

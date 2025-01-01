@@ -73,7 +73,4 @@
 </div>
 
 <style>
-    select {
-        min-width: 250px;
-    }
 </style>
