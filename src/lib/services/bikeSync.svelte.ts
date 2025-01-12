@@ -28,7 +28,7 @@ export class BikeSyncService {
     private lastProcessTime = $state(Date.now());
     private readonly BATCH_SIZE = 3000;
     private readonly BATCH_INTERVAL = 1000;
-    private readonly MAX_BATCH_AGE = 1000;
+    private readonly MAX_BATCH_AGE = 3000;
 
 
     subscribe(bikeId: string, callback: (status: boolean) => void): () => void {

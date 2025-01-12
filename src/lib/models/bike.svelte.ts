@@ -51,6 +51,9 @@ export class Bike implements BikeType {
     });
 
     readonly speedlimit = $derived.by(() => {
+        if (!this.moving) {
+            return undefined;
+        }
         return speedZoneStore.getSpeedLimitAtPoint({ latitude: this.latitude, longitude: this.longitude }) ?? undefined;
     });
 

@@ -16,7 +16,7 @@
                     Hastighetsbegränsning: {speedZone.speedLimit} km/h
                 </div>
                 <div class="text-gray-600 py-2">
-                    <ZoneMap polygon={speedZone.points} />
+                    <ZoneMap polygon={speedZone.polygon.geometry.coordinates} />
                 </div>
             </div>
         {/each}

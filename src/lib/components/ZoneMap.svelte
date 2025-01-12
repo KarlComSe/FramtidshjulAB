@@ -8,8 +8,8 @@
     <!-- Original ambition : show on a map -->
     {#if polygon}
         <ul class="list-disc list-inside">
-            {#each polygon as point}
-                <li class="text-gray-700">{point.lat}, {point.lng}</li>
+            {#each polygon[0] as point}
+                <li class="text-gray-700">{point}</li>
             {/each}
         </ul>
     {/if}
