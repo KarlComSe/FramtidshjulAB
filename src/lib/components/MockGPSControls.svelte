@@ -6,7 +6,7 @@
     function sleep(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
-    function mockGPSForAllBikes() {
+    async function mockGPSForAllBikes() {
         const bikes = bikeStore.bikes.values();
         for (const bike of bikes) {
             bikeStore.setGPSProvider(
@@ -16,7 +16,6 @@
                     loop: true,
                 }),
             );
-            sleep(50);    
         }
     }
 

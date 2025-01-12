@@ -17,7 +17,7 @@ export class MockGPS extends GPSProvider {
     private currentPositionIndex = 0;
     private intervalId: number | null = null;
 
-    constructor({ route, updateInterval = 1000, loop = false, currentPositionIndex }: MockGPSConfig) {
+    constructor({ route, updateInterval = 2000, loop = false, currentPositionIndex }: MockGPSConfig) {
         super();
         this.route = route;
         this.updateInterval = updateInterval;

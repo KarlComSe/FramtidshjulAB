@@ -1,21 +1,41 @@
 <script lang="ts">
-    // AI contributed in making this code
+    // Heavily AI generated code. 
     import { bikeStore } from "$lib/stores/bikeStore.svelte";
     import "leaflet/dist/leaflet.css";
-    import type { Map } from "leaflet";
+    import type { Map as LeafletMap } from "leaflet";  // Renamed to avoid conflict
     import { onMount } from "svelte";
 
     let bikes = bikeStore.bikes;
 
-    let map: Map;
+    let map: LeafletMap;  
     let L: typeof import("leaflet");
     let markerLayer: L.LayerGroup;
     let markers: Record<string, L.Marker> = {};
     let mapInitialized = $state(false);
+    
+    // Specify the type for pendingUpdates
+    let pendingUpdates = new Map<string, [number, number]>();
+    let updateScheduled = false;
+
+    let mapBounds: L.LatLngBounds | null = null;
+    let visibleBikes = $derived(getVisibleBikes());
+
+    function getVisibleBikes() {
+        if (!mapBounds || !bikes.size) return [];
+        return Array.from(bikes.values()).filter(bike => 
+            mapBounds?.contains([bike.latitude, bike.longitude])
+        );
+    }
+
 
     onMount(async () => {
         L = await import("leaflet");
         map = L.map("map").setView([57.7089, 11.9746], 13);
+
+        map.on('moveend', () => {
+            mapBounds = map.getBounds();
+        });
+        mapBounds = map.getBounds();
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution:
@@ -25,35 +45,78 @@
         markerLayer = L.layerGroup().addTo(map);
         mapInitialized = true;
         if (bikes.size > 0) {
-            handleMarkers();
+            processMarkers();
         }
     });
 
-    $effect(() => {
-        if (mapInitialized && bikes.size > 0) {
-            handleMarkers();
-        }
-    });
+    function createMarker(bikeId: string, lat: number, lng: number) {
+        const marker = L.marker([lat, lng], {
+            title: `Bike ${bikeId}`
+        });
+        markers[bikeId] = marker;
+        marker.addTo(markerLayer);
+    }
 
-    function handleMarkers() {
+    function queueMarkerUpdate(bikeId: string, lat: number, lng: number) {
+        pendingUpdates.set(bikeId, [lat, lng]);
+        
+        if (!updateScheduled) {
+            updateScheduled = true;
+            requestAnimationFrame(() => flushUpdates());
+        }
+    }
+
+    function flushUpdates() {
+        updateScheduled = false;
+        
+        for (const [bikeId, [lat, lng]] of pendingUpdates.entries()) {
+            const marker = markers[bikeId];
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            }
+        }
+        
+        pendingUpdates.clear();
+    }
+
+    function processMarkers() {
         if (!markerLayer || !L) return;
         
-        const bikeArray = Array.from(bikes.values());
+        const currentBikes = Array.from(bikes.values());
+        const bikeIds = new Set(currentBikes.map(bike => bike.id));
         
-        for (const bike of bikeArray) {
+        // Remove markers for bikes that no longer exist
+        Object.keys(markers).forEach(id => {
+            if (!bikeIds.has(id)) {
+                markers[id].remove();
+                delete markers[id];
+            }
+        });
+        
+        // Update or create markers
+        for (const bike of visibleBikes) {
             if (bike.latitude && bike.longitude) {
                 if (markers[bike.id]) {
-                    markers[bike.id].setLatLng([bike.latitude, bike.longitude]);
+                    queueMarkerUpdate(bike.id, bike.latitude, bike.longitude);
                 } else {
-                    const marker = L.marker([bike.latitude, bike.longitude], {
-                        title: `Bike ${bike.id}`
-                    });
-                    markers[bike.id] = marker;
-                    marker.addTo(markerLayer);
+                    createMarker(bike.id, bike.latitude, bike.longitude);
                 }
             }
         }
+        Object.keys(markers).forEach(id => {
+            const marker = markers[id];
+            if (!mapBounds?.contains(marker.getLatLng())) {
+                marker.remove();
+                delete markers[id];
+            }
+        });
     }
+
+    $effect(() => {
+        if (mapInitialized && bikes.size > 0) {
+            processMarkers();
+        }
+    });
 </script>
 
 <div class="bg-white rounded-lg shadow-md p-4 my-2">

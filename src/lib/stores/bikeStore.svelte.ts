@@ -11,6 +11,28 @@ import { Bike } from "$lib/models/bike.svelte";
 // import { bikeSyncService } from "$lib/services/bikeSync.svelte";
 
 export class BikeStore {
+    private readonly UPDATE_INTERVAL = 1000; // Base interval
+    private mainInterval: number | null = null;
+
+    constructor() {
+        this.startMainInterval();
+    }
+
+    private startMainInterval() {
+        this.mainInterval = setInterval(() => {
+            const now = Date.now();
+            
+            // Check speed timeouts
+            for (const [bikeId, bike] of this.bikes.entries()) {
+                const timeSinceUpdate = now - (bike.gpsPosition?.timestamp ?? Infinity);
+                if (timeSinceUpdate > 5000 && bike.speed !== 0) {
+                    bike.speed = 0;
+                    console.log('No GPS update in 5 seconds. Resetting speed to 0');
+                }
+            }
+        }, this.UPDATE_INTERVAL);
+    }
+
     bikes = $state<Map<string, BikeType>>(new Map());
     private gpsProviders = new Map<string, GPSProvider>();
     private gpsTimeoutCheckers = new Map<string, number>();
@@ -20,7 +42,8 @@ export class BikeStore {
     // it is not needed to create a new map, Svelte should be deeply reactive
     addOrUpdateBike(bike: BikeType) {
         const properBike = bike instanceof Bike ? bike : new Bike(bike);
-        this.bikes = new Map(this.bikes).set(properBike.id, properBike);
+        this.bikes.set(properBike.id, properBike);
+        // this.bikes = new Map(this.bikes).set(properBike.id, properBike);
     }
 
     selectedBike = $derived(() => {
@@ -63,18 +86,18 @@ export class BikeStore {
             }
         });
 
-        const timeoutChecker = setInterval(() => {
-            const bike = this.bikes.get(bikeId);
-            if (bike instanceof Bike) {
-                const timeSinceUpdate = Date.now() - (bike.gpsPosition?.timestamp ?? Infinity);
-                if (timeSinceUpdate > 5000 && bike.speed !== 0) {
-                    console.warn('No GPS update in 5 seconds. Resetting speed to 0');
-                    bike.updateSpeed(0);
-                }
-            }
-        }, 5000);
+        // const timeoutChecker = setInterval(() => {
+        //     const bike = this.bikes.get(bikeId);
+        //     if (bike instanceof Bike) {
+        //         const timeSinceUpdate = Date.now() - (bike.gpsPosition?.timestamp ?? Infinity);
+        //         if (timeSinceUpdate > 5000 && bike.speed !== 0) {
+        //             console.warn('No GPS update in 5 seconds. Resetting speed to 0');
+        //             bike.updateSpeed(0);
+        //         }
+        //     }
+        // }, 5000);
 
-        this.gpsTimeoutCheckers.set(bikeId, timeoutChecker);
+        // this.gpsTimeoutCheckers.set(bikeId, timeoutChecker);
         this.gpsProviders.set(bikeId, provider);
     }
 

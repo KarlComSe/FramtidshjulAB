@@ -2,17 +2,17 @@
     import { bikeStore } from "$lib/stores/bikeStore.svelte";
     import { bikeSyncService } from "$lib/services/bikeSync.svelte";
 
-    const DELAY_BETWEEN_SYNC_START = 50;
+    const DELAY_BETWEEN_SYNC_START = 5;
 
     function sleep(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    async function startSyncAllBikes() {
+    function startSyncAllBikes() {
         const bikes = Array.from(bikeStore.bikes.values());
         for (const bike of bikes) {
             bikeSyncService.startSync(bike.id);
-            await sleep(DELAY_BETWEEN_SYNC_START);
+            // await sleep(DELAY_BETWEEN_SYNC_START);
         }
     }
     function stopSyncAllBikes() {
