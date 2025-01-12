@@ -13,7 +13,7 @@ export function setupGlobalErrorHandler(): void {
   });
 }
 
-export function handleError(error: Error): null {
+export function handleError(error: Error): void {
   toaster.show({ message: error.message });
-  return null;
+  console.error(error);
 }
