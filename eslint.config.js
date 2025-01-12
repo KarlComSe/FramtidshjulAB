@@ -19,7 +19,7 @@ export default ts.config(
     languageOptions: {
       parserOptions: {
         project: true,
-      }
+      },
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn', // Warning instead of error
