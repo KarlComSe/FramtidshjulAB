@@ -1,8 +1,8 @@
 <script lang="ts">
   // mostly AI generated code
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
-  import { onMount } from "svelte";
-  import "leaflet/dist/leaflet.css";
+  import { onMount } from 'svelte';
+  import 'leaflet/dist/leaflet.css';
   import type { Map, Marker } from 'leaflet';
 
   let map: Map;
@@ -15,8 +15,8 @@
     console.log('Position updated:', bike?.latitude, bike?.longitude);
     return {
       lat: bike?.latitude ?? 51.505,
-      lng: bike?.longitude ?? -0.09
-    }
+      lng: bike?.longitude ?? -0.09,
+    };
   });
 
   // Update marker when position changes
@@ -29,7 +29,6 @@
       map?.setView([position.lat, position.lng]);
     }
   });
-  
 
   onMount(() => {
     const initMap = async () => {
@@ -41,7 +40,7 @@
 
       // Add tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap contributors',
       }).addTo(map);
 
       // Add marker

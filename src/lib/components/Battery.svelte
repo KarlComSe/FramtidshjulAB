@@ -1,2 +1,1 @@
-Show "WARNING" if battery is low
-Show battery percentage
+Show "WARNING" if battery is low Show battery percentage

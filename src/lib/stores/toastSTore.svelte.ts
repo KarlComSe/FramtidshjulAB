@@ -27,9 +27,9 @@ class ToastStore {
   show({ message, type = 'error', duration = 3000 }: ToastConfig): void {
     const toast = new Toast({ message, type, duration });
     this.toasts = [...this.toasts, toast];
-    
+
     setTimeout(() => {
-      this.toasts = this.toasts.filter(t => t.id !== toast.id);
+      this.toasts = this.toasts.filter((t) => t.id !== toast.id);
     }, duration);
   }
 }

@@ -1,17 +1,17 @@
 <!-- This component is coming from this GIST: https://gist.github.com/Lure5134/38001e338c95c830fb4725330f4ef048/078f3af4c8bf3d3929aa06869d0b6ec72d660b24 -->
 <script lang="ts" generics="T">
-  import { onMount, tick, type Snippet } from "svelte";
+  import { onMount, tick, type Snippet } from 'svelte';
 
   const {
     items,
     height,
     itemHeight,
-	  Children: testChildren,
+    Children: testChildren,
   }: {
     items: Array<T>;
     height: string;
     itemHeight?: number | undefined;
-  	Children: Snippet<[T]>;
+    Children: Snippet<[T]>;
   } = $props();
 
   // read-only, but visible to consumers via bind:start
@@ -43,11 +43,7 @@
     }
   });
 
-  async function refresh(
-    items: Array<any>,
-    viewport_height: number,
-    itemHeight?: number
-  ) {
+  async function refresh(items: Array<any>, viewport_height: number, itemHeight?: number) {
     const { scrollTop } = viewport;
 
     await tick(); // wait until the DOM is up to date
@@ -64,8 +60,7 @@
         row = rows[i - start];
       }
 
-      const row_height = (height_map[i] =
-        itemHeight || (row as HTMLElement).offsetHeight);
+      const row_height = (height_map[i] = itemHeight || (row as HTMLElement).offsetHeight);
       content_height += row_height;
       i += 1;
     }
@@ -93,8 +88,7 @@
     const old_start = start;
 
     for (let v = 0; v < rows.length; v += 1) {
-      height_map[start + v] =
-        itemHeight || (rows[v] as HTMLElement).offsetHeight;
+      height_map[start + v] = itemHeight || (rows[v] as HTMLElement).offsetHeight;
     }
 
     let i = 0;
@@ -138,8 +132,7 @@
       for (let i = start; i < old_start; i += 1) {
         if (rows[i - start]) {
           expected_height += height_map[i];
-          actual_height +=
-            itemHeight || (rows[i - start] as HTMLElement).offsetHeight;
+          actual_height += itemHeight || (rows[i - start] as HTMLElement).offsetHeight;
         }
       }
 
@@ -154,7 +147,7 @@
 
   // trigger initial refresh
   onMount(() => {
-    rows = contents.getElementsByTagName("svelte-virtual-list-row");
+    rows = contents.getElementsByTagName('svelte-virtual-list-row');
     mounted = true;
   });
 </script>
@@ -171,7 +164,7 @@
   >
     {#each visible as row (row.index)}
       <svelte-virtual-list-row>
-		    {@render testChildren?.(row.data)}
+        {@render testChildren?.(row.data)}
       </svelte-virtual-list-row>
     {/each}
   </svelte-virtual-list-contents>
