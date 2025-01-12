@@ -95,6 +95,12 @@ export class Bike implements BikeType {
     }
 
     toggleIsTravelling() {
+        if (!this.isEquipmentOn) {
+            throw new Error('Cannot start ride : equipment is off');
+        }
+        if (this.status !== BikeStatus.Rented || this.renter === undefined) {
+            throw new Error('Cannot start ride : bike is not rented or renter is not known to bike');
+        }
         this.isTravelling = !this.isTravelling;
     }
 
