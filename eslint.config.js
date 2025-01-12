@@ -16,6 +16,11 @@ export default ts.config(
   {
     // Specific rules for TypeScript files
     files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        project: true,
+      }
+    },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn', // Warning instead of error
       '@typescript-eslint/explicit-function-return-type': 'off', // Less strict about return types
@@ -39,13 +44,13 @@ export default ts.config(
       parserOptions: {
         parser: ts.parser,
       },
-      rules: {
-        'svelte/valid-compile': 'error',
-        'svelte/no-unused-svelte-ignore': 'error',
-        // More lenient rules for Svelte files
-        '@typescript-eslint/no-explicit-any': 'warn',
-        'no-undef': 'off', // Svelte handles this differently
-      },
+    },
+    rules: {
+      'svelte/valid-compile': 'error',
+      'svelte/no-unused-svelte-ignore': 'error',
+      // More lenient rules for Svelte files
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'no-undef': 'off', // Svelte handles this differently
     },
   }
 );
