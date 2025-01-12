@@ -5,6 +5,8 @@ import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
+import sonarjs from 'eslint-plugin-sonarjs';
+
 const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
 export default ts.config(
@@ -25,27 +27,49 @@ export default ts.config(
         extraFileExtensions: ['.svelte']  // Added Svelte file recognition
       }
     },
+    plugins: {
+      sonarjs: sonarjs
+    },
     rules: {
-      // Strict TypeScript rules
+      // Basic TypeScript rules that don't require type checking
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       
-      // Svelte-specific rules
-      'svelte/no-unused-svelte-ignore': 'error',
-      'svelte/html-quotes': ['error', { prefer: 'double' }],
-      'svelte/spaced-html-comment': 'error',
+      '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+
+      // SonarJS rules (these don't require type information)
+      'sonarjs/cognitive-complexity': ['error', 15],
+      'sonarjs/no-duplicate-string': ['error', { threshold: 5 }],
+      'sonarjs/no-identical-functions': 'error',
+      'sonarjs/no-redundant-jump': 'error',
+      'sonarjs/prefer-immediate-return': 'error',
+      'sonarjs/prefer-single-boolean-return': 'error',
       
       // General code quality rules
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
-      'prefer-const': 'error'
+      'prefer-const': 'error',
+      'no-duplicate-imports': 'error',
+      'complexity': ['error', { max: 15 }],
+      'max-depth': ['error', { max: 4 }],
+      'max-params': ['error', { max: 4 }],
+      
+      // Svelte specific
+      'svelte/no-unused-svelte-ignore': 'error',
+      'svelte/html-quotes': ['error', { prefer: 'double' }],
+      'svelte/spaced-html-comment': 'error'
     }
   },
   {
-    files: ["*/.svelte"],
+    files: ["**/*.svelte"],
 
     languageOptions: {
+      globals: {
+        $state: 'readonly',
+        $derived: 'readonly',
+        $effects: 'readonly',
+        $props: 'readonly',
+      },
       parserOptions: {
         parser: ts.parser
       }
