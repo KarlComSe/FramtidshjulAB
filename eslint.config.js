@@ -1,64 +1,63 @@
-import prettier from 'eslint-config-prettier';
+import prettier from "eslint-config-prettier";
 import js from '@eslint/js';
 import { includeIgnoreFile } from '@eslint/compat';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
-
-const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
+const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
 export default ts.config(
   includeIgnoreFile(gitignorePath),
   js.configs.recommended,
   ...ts.configs.recommended,
-  ...ts.configs.strictTypeChecked,
+  ...svelte.configs["flat/recommended"],
+  prettier,
+  ...svelte.configs['flat/prettier'],
   {
-    // Base configuration for all files
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node,
+        ...globals.node
       },
       parserOptions: {
-        project: true,
-      },
-    },
-  },
-  {
-    // TypeScript files configuration
-    files: ['**/*.{ts,tsx}'],
-    plugins: {
-      '@typescript-eslint': ts.plugin,
+        project: './tsconfig.json',  // Ensure TypeScript project is referenced
+        extraFileExtensions: ['.svelte']  // Added Svelte file recognition
+      }
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-floating-promises': 'warn',
-    },
-  },
-  {
-    // Svelte files configuration
-    files: ['**/*.svelte'],
-    plugins: {
-      '@typescript-eslint': ts.plugin,
-      svelte: svelte.plugin,
-    },
-    languageOptions: {
-      parser: svelte.parser,
-      parserOptions: {
-        parser: ts.parser,
-        project: true,
-      },
-    },
-    rules: {
-      'svelte/valid-compile': 'error',
+      // Strict TypeScript rules
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      
+      // Svelte-specific rules
       'svelte/no-unused-svelte-ignore': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      'no-undef': 'off',
-    },
+      'svelte/html-quotes': ['error', { prefer: 'double' }],
+      'svelte/spaced-html-comment': 'error',
+      
+      // General code quality rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-debugger': 'error',
+      'prefer-const': 'error'
+    }
   },
-  // Apply prettier last to override any conflicting rules
-  prettier
+  {
+    files: ["*/.svelte"],
+
+    languageOptions: {
+      parserOptions: {
+        parser: ts.parser
+      }
+    }
+  },
+  {
+    // Configuration for config files
+    files: ["*.config.js", "*.config.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: null  // Disable typed linting for config files
+      }
+    }
+  }
 );
