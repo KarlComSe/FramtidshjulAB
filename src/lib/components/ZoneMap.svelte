@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { polygon } = $props();
+  const { polygon } = $props();
 </script>
 
 <div class="rounded-lg bg-gray-100 p-4 shadow-md">

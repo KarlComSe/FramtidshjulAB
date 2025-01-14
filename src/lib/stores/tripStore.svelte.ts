@@ -6,6 +6,14 @@
 import { browser } from '$app/environment';
 import type { TripDto } from '$lib/models/trips.svelte.ts';
 
+export interface TripStartParams {
+  tripId: number;
+  bikeId: string;
+  renter: string;
+  startLatitude: number;
+  startLongitude: number;
+}
+
 export class TripStore {
   trips = $state<TripDto[]>([]);
 
@@ -15,17 +23,11 @@ export class TripStore {
     }
   }
 
-  startNewTrip(
-    tripId: string,
-    bikeId: string,
-    renter: string,
-    startLatitude: number,
-    startLongitude: number
-  ): string {
+  startNewTrip(params: TripStartParams): number {
+    const { tripId, bikeId, renter, startLatitude, startLongitude } = params;
     if (this.hasOngoingTrip(bikeId)) {
       throw new Error(`Bike with id ${bikeId} is already in a trip. Will not add new trip.`);
     }
-    console.log('Starting new trip', tripId, bikeId, renter, startLatitude, startLongitude);
 
     const trip: TripDto = {
       tripId,
@@ -57,7 +59,7 @@ export class TripStore {
     return this.trips.some((trip) => trip.bikeId === bikeId && !trip.endTime);
   }
 
-  private save() {
+  private save(): void {
     localStorage.setItem('trips', JSON.stringify(this.trips));
   }
 

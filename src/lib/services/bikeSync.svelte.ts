@@ -26,7 +26,7 @@ export class BikeSyncService {
   private batchUpdates = $state<BatchedPositionUpdate[]>([]);
   private batchProcessingInterval: number | null = null;
   private lastProcessTime = $state(Date.now());
-  private readonly BATCH_SIZE = 3000;
+  private readonly BATCH_SIZE = 1500;
   private readonly BATCH_INTERVAL = 1000;
   private readonly MAX_BATCH_AGE = 3000;
 
@@ -51,7 +51,7 @@ export class BikeSyncService {
     this.startBatchProcessor();
   }
 
-  private startBatchProcessor() {
+  private startBatchProcessor(): void {
     if (this.batchProcessingInterval) return;
 
     this.batchProcessingInterval = setInterval(() => {
@@ -59,7 +59,7 @@ export class BikeSyncService {
     }, this.BATCH_INTERVAL);
   }
 
-  private async processBatch() {
+  private async processBatch(): Promise<void> {
     if (this.batchUpdates.length === 0) return;
 
     const currentTime = Date.now();
@@ -82,7 +82,7 @@ export class BikeSyncService {
     }
   }
 
-  private async syncBatch(updates: BatchedPositionUpdate[]) {
+  private async syncBatch(updates: BatchedPositionUpdate[]): Promise<void> {
     const response = await fetch(`${BACKEND_URL}/bike/batch/positions`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -94,8 +94,7 @@ export class BikeSyncService {
     }
   }
 
-  startSync(bikeId: string, interval: number = 2000) {
-    console.log('Starting sync for bike:', bikeId);
+  startSync(bikeId: string, interval: number = 2000): void {
     if (this.intervals.has(bikeId)) {
       console.warn(`Sync for bike ${bikeId} is already running. Restarting with new interval.`);
       return;
@@ -111,11 +110,9 @@ export class BikeSyncService {
     this.intervals = newIntervals;
 
     this.subscribers.get(bikeId)?.forEach((callback) => callback(this.isSyncRunning(bikeId)));
-    console.log('Current intervals after start:', Array.from(this.intervals.keys()));
   }
 
-  stopSync(bikeId: string) {
-    console.log('Stopping sync for bike:', bikeId);
+  stopSync(bikeId: string): void {
     const interval = this.intervals.get(bikeId);
     if (!interval) {
       throw new Error(`Sync for bike ${bikeId} is not running`);
@@ -130,10 +127,9 @@ export class BikeSyncService {
     this.intervals = newIntervals;
 
     this.subscribers.get(bikeId)?.forEach((callback) => callback(this.isSyncRunning(bikeId)));
-    console.log('Current intervals after stop:', Array.from(this.intervals.keys()));
   }
 
-  private syncBike(bikeId: string) {
+  private syncBike(bikeId: string): void {
     const bike = bikeStore.bikes.get(bikeId);
     if (!bike) {
       console.warn(`Bike with id ${bikeId} not found. Stopping sync.`);
@@ -144,7 +140,7 @@ export class BikeSyncService {
     this.syncBikePosition(bike);
   }
 
-  private async syncBikeData(bike: BikeType) {
+  private async syncBikeData(bike: BikeType): Promise<void> {
     try {
       const response = await fetch(`${BACKEND_URL}/bike/${bike.id}`, {
         method: 'PATCH',
@@ -154,38 +150,18 @@ export class BikeSyncService {
 
       if (!response.ok) {
         console.error(`Failed to sync bike ${bike.id}: ${response.statusText}`);
-      } else {
-        console.info(`Bike ${bike.id} synced successfully.`);
       }
     } catch (error) {
       console.error(`Error syncing bike ${bike.id}:`, error);
     }
   }
 
-  private syncBikePosition(bike: BikeType) {
+  private syncBikePosition(bike: BikeType): void {
     this.batchUpdates.push({
       id: bike.id,
       latitude: bike.latitude,
       longitude: bike.longitude,
     });
-    // try {
-    //     const response = await fetch(`${BACKEND_URL}/bike/${bike.id}`, {
-    //         method: 'PATCH',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({
-    //             latitude: bike.latitude,
-    //             longitude: bike.longitude,
-    //         }),
-    //     });
-
-    //     if (!response.ok) {
-    //         console.error(`Failed to sync bike ${bike.id} position: ${response.statusText}`);
-    //     } else {
-    //         console.info(`Bike ${bike.id} position synced successfully.`);
-    //     }
-    // } catch (error) {
-    //     console.error(`Error syncing bike ${bike.id} position:`, error);
-    // }
   }
 
   isSyncRunning(bikeId: string): boolean {
@@ -196,7 +172,7 @@ export class BikeSyncService {
     return Array.from(this.intervals.keys());
   }
 
-  async cleanup() {
+  async cleanup(): Promise<void> {
     if (this.batchProcessingInterval) {
       clearInterval(this.batchProcessingInterval);
       this.batchProcessingInterval = null;
@@ -210,7 +186,6 @@ export class BikeSyncService {
         const finalUpdates = [...this.batchUpdates];
         this.batchUpdates.length = 0;
         await this.syncBatch(finalUpdates);
-        console.log(`Final batch of ${finalUpdates.length} updates processed successfully`);
       } catch (error) {
         console.error('Failed to process final batch during cleanup:', error);
         throw error;

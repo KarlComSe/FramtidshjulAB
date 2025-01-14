@@ -30,7 +30,7 @@ export class MockGPS extends GPSProvider {
 
   private watchId: number | null = null;
 
-  startUpdate(callback: (position: Position) => void) {
+  startUpdate(callback: (position: Position) => void): void {
     if (this.route.length === 0) {
       throw new Error('No route defined, route.length === 0');
     }
@@ -53,7 +53,7 @@ export class MockGPS extends GPSProvider {
     }, this.updateInterval);
   }
 
-  stopUpdate() {
+  stopUpdate(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -73,7 +73,7 @@ export class MockGPS extends GPSProvider {
   }
 
   // mostly AI-generated code
-  static createRouteFromPositions(positions: Position[], pointsPerSegment = 50) {
+  static createRouteFromPositions(positions: Position[], pointsPerSegment = 50): Position[] {
     const route: Position[] = [];
     for (let i = 0; i < positions.length - 1; i++) {
       const start = positions[i];

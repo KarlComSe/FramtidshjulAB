@@ -7,7 +7,7 @@
   import Mapped from './Mapped.svelte';
   import { onDestroy, onMount } from 'svelte';
 
-  let throttledStats = $state({
+  const throttledStats = $state({
     movingBikes: 0,
     totalBikes: 0,
     syncingBikes: 0,

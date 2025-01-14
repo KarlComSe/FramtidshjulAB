@@ -1,10 +1,9 @@
 <script lang="ts">
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
 
-  let selectedBikeId = $derived(bikeStore.selectedBikeId);
-  let selectedBike = $derived(bikeStore.selectedBike());
-  let isEquipmentOn = $derived(selectedBike?.isEquipmentOn ?? false);
-  let isTravelling = $derived(selectedBike?.isTravelling ?? false);
+  const selectedBike = $derived(bikeStore.selectedBike());
+  const isEquipmentOn = $derived(selectedBike?.isEquipmentOn ?? false);
+  const isTravelling = $derived(selectedBike?.isTravelling ?? false);
 </script>
 
 <div class="rounded-lg bg-white p-4 shadow-md">

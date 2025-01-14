@@ -3,7 +3,7 @@
   let showOnlyFinalizedTrip = $state(false);
   let showOnlyOngoingTrip = $state(false);
   let filterBikeId = $state('');
-  let trips = $derived(
+  const trips = $derived(
     tripStore.trips
       .filter((trip) => {
         if (showOnlyFinalizedTrip && showOnlyOngoingTrip) {

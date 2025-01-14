@@ -40,7 +40,6 @@ export abstract class GPSProvider {
     const speedMps = distance / timeSeconds;
     const speedKph = speedMps * 3.6;
 
-    console.log('Speed', speedKph);
     return Math.round(speedKph * 10) / 10;
   }
 }

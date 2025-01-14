@@ -4,7 +4,7 @@
 
   // Styling and helper function geenrated partially by AI
 
-  let { selectedBike } = $props<{
+  const { selectedBike } = $props<{
     selectedBike: Bike;
   }>();
 
@@ -28,11 +28,9 @@
   let syncStatus = $state(false);
 
   $effect(() => {
-    const unsubscribe = bikeSyncService.subscribe(selectedBike.id, (status) => {
+    return bikeSyncService.subscribe(selectedBike.id, (status) => {
       syncStatus = status;
     });
-
-    return unsubscribe;
   });
 </script>
 

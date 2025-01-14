@@ -1,4 +1,6 @@
 <script lang="ts">
+  // @TODO : check if tripStore; on around line 64 is needed
+
   import Toaster from '$lib/components/Toaster.svelte';
   import { setupGlobalErrorHandler } from '$lib/errorHandler';
   import { Bike } from '$lib/models/bike.svelte';
@@ -9,12 +11,12 @@
   import type { SpeedZone } from '$lib/types/Polygon';
   import '../app.css';
   import { BACKEND_URL } from '../config';
-  let { children } = $props();
+  const { children } = $props();
 
   let bikesInitialized = $state(false);
   let tripStoreInitialized = $state(false);
   let speedZoneStoreInitialized = $state(false);
-  async function initializeBikes() {
+  async function initializeBikes(): Promise<boolean> {
     try {
       const response = await fetch(`${BACKEND_URL}/bike`);
       const bikes: BikeAPIDto[] = await response.json();
@@ -32,11 +34,22 @@
     }
   }
 
-  async function initializeSpeedZoneStore() {
+  async function initializeSpeedZoneStore(): Promise<void> {
     try {
       const response = await fetch(`${BACKEND_URL}/zone?type=speed`);
       const data = await response.json();
-      const speedZones = data.zones.map((zone: any) => ({
+
+      interface ApiSpeedZone {
+        id: string;
+        name: string;
+        type: string;
+        polygon: { lat: number; lng: number }[];
+        speedZone: {
+          speedLimit: number;
+        };
+      }
+
+      const speedZones = data.zones.map((zone: ApiSpeedZone) => ({
         id: zone.id,
         name: zone.name,
         type: zone.type,
@@ -55,10 +68,12 @@
     }
   }
 
-  function initializeTripStore() {
+  function initializeTripStore(): void {
     try {
-      // Accessing the store will trigger its constructor and loading logic.
-      tripStore;
+      const store = tripStore;
+      if (!store) {
+        throw new Error('Trip store failed to initialize');
+      }
       tripStoreInitialized = true;
     } catch (err) {
       console.error('Failed to initialize tripStore:', err);

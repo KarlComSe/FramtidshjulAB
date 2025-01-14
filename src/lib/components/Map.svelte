@@ -10,9 +10,8 @@
   let mapElement: HTMLElement;
 
   // Derive the position using $derived
-  let position = $derived.by(() => {
+  const position = $derived.by(() => {
     const bike = bikeStore.selectedBike();
-    console.log('Position updated:', bike?.latitude, bike?.longitude);
     return {
       lat: bike?.latitude ?? 51.505,
       lng: bike?.longitude ?? -0.09,
@@ -22,8 +21,8 @@
   // Update marker when position changes
   $effect(() => {
     // not sure why reactivity didn't work without this.
-    const currentLat = position.lat;
-    const currentLng = position.lng;
+    void position.lat;
+    void position.lng;
     if (marker && position) {
       marker.setLatLng([position.lat, position.lng]);
       map?.setView([position.lat, position.lng]);
@@ -31,7 +30,7 @@
   });
 
   onMount(() => {
-    const initMap = async () => {
+    const initMap = async (): Promise<void> => {
       // Dynamic import of Leaflet
       const L = (await import('leaflet')).default;
 

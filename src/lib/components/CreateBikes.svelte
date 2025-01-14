@@ -4,12 +4,11 @@
   import type { BikeType } from '$lib/types/Bike';
   let numberOfBikes = $state(100);
 
-  function createBikes() {
-    console.log(`Creating ${numberOfBikes} bikes`);
+  function createBikes(): void {
     createBikesInBackend();
   }
 
-  async function createBikesInBackend() {
+  async function createBikesInBackend(): Promise<void> {
     const bikes = Array(numberOfBikes).fill({ latitude: 57.7, longitude: 11.9753 });
     try {
       const response = await fetch(`${BACKEND_URL}/bike/create-many`, {
@@ -18,7 +17,6 @@
         body: JSON.stringify(bikes),
       });
       if (response.ok) {
-        console.log(`Created ${numberOfBikes} bikes`);
         const newBikes = (await response.json()) as BikeType[];
         newBikes.forEach((bike) => {
           bikeStore.addOrUpdateBike(bike);

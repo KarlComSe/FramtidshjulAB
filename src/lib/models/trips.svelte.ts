@@ -1,5 +1,5 @@
 export interface TripDto {
-  tripId: string;
+  tripId: number;
   bikeId: string;
   renter: string;
   startTime: string;

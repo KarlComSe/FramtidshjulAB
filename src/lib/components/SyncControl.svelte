@@ -2,29 +2,25 @@
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
   import { bikeSyncService } from '$lib/services/bikeSync.svelte';
 
-  const DELAY_BETWEEN_SYNC_START = 5;
+  //   const DELAY_BETWEEN_SYNC_START = 5;
 
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  //   function sleep(ms: number) : Promise<void> {
+  //     return new Promise((resolve) => setTimeout(resolve, ms));
+  //   }
 
-  function startSyncAllBikes() {
+  function startSyncAllBikes(): void {
     const bikes = Array.from(bikeStore.bikes.values());
     for (const bike of bikes) {
       bikeSyncService.startSync(bike.id);
       // await sleep(DELAY_BETWEEN_SYNC_START);
     }
   }
-  function stopSyncAllBikes() {
-    console.log('Attempting to stop all syncs');
+  function stopSyncAllBikes(): void {
     const runningSyncs = bikeSyncService.getRunningSyncs();
-    console.log('Currently running syncs:', runningSyncs);
 
     runningSyncs.forEach((bikeId) => {
-      console.log(`Attempting to stop sync for bike ${bikeId}`);
       try {
         bikeSyncService.stopSync(bikeId);
-        console.log(`Stopped sync for bike ${bikeId}`);
       } catch (error) {
         console.warn(`Failed to stop sync for bike ${bikeId}:`, error);
       }

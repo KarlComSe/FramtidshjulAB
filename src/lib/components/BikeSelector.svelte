@@ -2,15 +2,15 @@
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
   import QrCode from '$lib/components/QrCode.svelte';
   let filter = $state('');
-  let bikes = $derived([...bikeStore.bikes.values()].filter((bike) => bike.id.includes(filter)));
-  let selectedBikeId = $derived(bikeStore.selectedBikeId);
+  const bikes = $derived([...bikeStore.bikes.values()].filter((bike) => bike.id.includes(filter)));
+  const selectedBikeId = $derived(bikeStore.selectedBikeId);
   let showBikeSelector = $state(true);
 
-  function handleSelect(event: Event) {
+  function handleSelect(event: Event): void {
     const select = event.target as HTMLSelectElement;
     bikeStore.selectBike(select.value);
   }
-  function filterBikes(event: Event) {
+  function filterBikes(event: Event): void {
     const input = event.target as HTMLInputElement;
     filter = input.value;
   }

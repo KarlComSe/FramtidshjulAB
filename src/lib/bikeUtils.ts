@@ -4,8 +4,7 @@ import { Bike } from '$lib/models/bike.svelte';
 import type { BikePatchAPIDto } from './types/BikePatchAPIDto';
 
 export function mapDtoToBike(dto: BikeAPIDto): BikeType {
-  const bike = new Bike(dto);
-  return bike;
+  return new Bike(dto);
 }
 
 export function mapBikeToPatchAPIDto(bike: BikeType): BikePatchAPIDto {

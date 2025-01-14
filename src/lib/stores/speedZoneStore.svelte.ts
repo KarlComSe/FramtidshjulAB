@@ -49,7 +49,7 @@ export class SpeedZoneStore {
     return geoJSONZone;
   }
 
-  add(speedZone: SpeedZone) {
+  add(speedZone: SpeedZone): void {
     const geoJSONZone = this.convertToGeoJSONZone(speedZone);
     this.speedZones = [...this.speedZones, geoJSONZone];
   }

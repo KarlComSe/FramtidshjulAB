@@ -2,25 +2,26 @@
   // Heavily AI generated code.
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
   import 'leaflet/dist/leaflet.css';
-  import type { Map as LeafletMap } from 'leaflet'; // Renamed to avoid conflict
+  import type { Map as LeafletMap, LayerGroup, Marker, LatLngBounds } from 'leaflet'; // Renamed to avoid conflict
   import { onMount } from 'svelte';
+  import type { BikeType } from '$lib/types/Bike';
 
-  let bikes = bikeStore.bikes;
+  const bikes = bikeStore.bikes;
 
   let map: LeafletMap;
   let L: typeof import('leaflet');
-  let markerLayer: L.LayerGroup;
-  let markers: Record<string, L.Marker> = {};
+  let markerLayer: LayerGroup;
+  const markers: Record<string, Marker> = {};
   let mapInitialized = $state(false);
 
   // Specify the type for pendingUpdates
-  let pendingUpdates = new Map<string, [number, number]>();
+  const pendingUpdates = new Map<string, [number, number]>();
   let updateScheduled = false;
 
-  let mapBounds: L.LatLngBounds | null = null;
-  let visibleBikes = $derived(getVisibleBikes());
+  let mapBounds: LatLngBounds | null = null;
+  const visibleBikes = $derived(getVisibleBikes());
 
-  function getVisibleBikes() {
+  function getVisibleBikes(): Array<BikeType> {
     if (!mapBounds || !bikes.size) return [];
     return Array.from(bikes.values()).filter((bike) =>
       mapBounds?.contains([bike.latitude, bike.longitude])
@@ -48,7 +49,7 @@
     }
   });
 
-  function createMarker(bikeId: string, lat: number, lng: number) {
+  function createMarker(bikeId: string, lat: number, lng: number): void {
     const marker = L.marker([lat, lng], {
       title: `Bike ${bikeId}`,
     });
@@ -56,7 +57,7 @@
     marker.addTo(markerLayer);
   }
 
-  function queueMarkerUpdate(bikeId: string, lat: number, lng: number) {
+  function queueMarkerUpdate(bikeId: string, lat: number, lng: number): void {
     pendingUpdates.set(bikeId, [lat, lng]);
 
     if (!updateScheduled) {
@@ -65,7 +66,7 @@
     }
   }
 
-  function flushUpdates() {
+  function flushUpdates(): void {
     updateScheduled = false;
 
     for (const [bikeId, [lat, lng]] of pendingUpdates.entries()) {
@@ -78,7 +79,7 @@
     pendingUpdates.clear();
   }
 
-  function processMarkers() {
+  function processMarkers(): void {
     if (!markerLayer || !L) return;
 
     const currentBikes = Array.from(bikes.values());

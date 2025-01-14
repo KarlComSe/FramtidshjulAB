@@ -6,7 +6,7 @@ export class BrowserGPS extends GPSProvider {
 
   private watchId: number | null = null;
 
-  startUpdate(callback: (position: Position) => void) {
+  startUpdate(callback: (position: Position) => void): void {
     this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         callback({
@@ -23,7 +23,7 @@ export class BrowserGPS extends GPSProvider {
     );
   }
 
-  stopUpdate() {
+  stopUpdate(): void {
     if (this.watchId) {
       navigator.geolocation.clearWatch(this.watchId);
       this.watchId = null;

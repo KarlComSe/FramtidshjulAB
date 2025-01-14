@@ -3,10 +3,10 @@
   import { MockGPS } from '$lib/providers/MockGPS';
   const bikes = bikeStore.bikes;
 
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-  async function mockGPSForAllBikes() {
+  //   function sleep(ms: number) : Promise<void> {
+  //     return new Promise((resolve) => setTimeout(resolve, ms));
+  //   }
+  async function mockGPSForAllBikes(): Promise<void> {
     const bikes = bikeStore.bikes.values();
     for (const bike of bikes) {
       bikeStore.setGPSProvider(
@@ -19,7 +19,7 @@
     }
   }
 
-  function stopMockGPSForAllBikes() {
+  function stopMockGPSForAllBikes(): void {
     bikes.forEach((bike) => {
       bikeStore.stopGPSProvider(bike.id);
     });

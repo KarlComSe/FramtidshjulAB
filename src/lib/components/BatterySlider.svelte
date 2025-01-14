@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { Bike } from '$lib/models/bike.svelte';
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
-  import type { BikeAPIDto } from '$lib/types/BikeAPIDto';
 
   // Get the selected bike
-  let selectedBike = $derived(bikeStore.selectedBike());
+  const selectedBike = $derived(bikeStore.selectedBike());
 
   // Handle slider input and update battery level
-  function handleSliderChange(event: Event) {
+  function handleSliderChange(event: Event): void {
     const slider = event.target as HTMLInputElement;
 
     if (selectedBike) {

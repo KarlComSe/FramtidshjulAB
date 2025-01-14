@@ -18,16 +18,15 @@ export class BikeStore {
     this.startMainInterval();
   }
 
-  private startMainInterval() {
+  private startMainInterval(): void {
     this.mainInterval = setInterval(() => {
       const now = Date.now();
 
       // Check speed timeouts
-      for (const [bikeId, bike] of this.bikes.entries()) {
+      for (const bike of this.bikes.values()) {
         const timeSinceUpdate = now - (bike.gpsPosition?.timestamp ?? Infinity);
         if (timeSinceUpdate > 5000 && bike.speed !== 0) {
           bike.speed = 0;
-          console.log('No GPS update in 5 seconds. Resetting speed to 0');
         }
       }
     }, this.UPDATE_INTERVAL);
@@ -35,15 +34,12 @@ export class BikeStore {
 
   bikes = $state<Map<string, BikeType>>(new Map());
   private gpsProviders = new Map<string, GPSProvider>();
-  private gpsTimeoutCheckers = new Map<string, number>();
 
   selectedBikeId = $state<string | null>(null);
 
-  // it is not needed to create a new map, Svelte should be deeply reactive
-  addOrUpdateBike(bike: BikeType) {
+  addOrUpdateBike(bike: BikeType): void {
     const properBike = bike instanceof Bike ? bike : new Bike(bike);
     this.bikes.set(properBike.id, properBike);
-    // this.bikes = new Map(this.bikes).set(properBike.id, properBike);
   }
 
   selectedBike = $derived(() => {
@@ -51,7 +47,7 @@ export class BikeStore {
     return this.bikes.get(this.selectedBikeId) ?? null;
   });
 
-  selectBike(bikeId: string) {
+  selectBike(bikeId: string): void {
     if (!this.bikes.has(bikeId)) {
       console.warn(`Bike with id ${bikeId} not found`);
       return;
@@ -59,16 +55,14 @@ export class BikeStore {
     this.selectedBikeId = bikeId;
   }
 
-  unselectBike() {
+  unselectBike(): void {
     this.selectedBikeId = null;
   }
 
-  setGPSProvider(bikeId: string, provider: GPSProvider) {
+  setGPSProvider(bikeId: string, provider: GPSProvider): void {
     this.stopGPSProvider(bikeId);
-    console.log('Starting GPS provider for bike', bikeId);
 
     provider.startUpdate((position) => {
-      console.log('New position', position);
       const bike = this.bikes.get(bikeId);
 
       if (!provider.validatePosition(position)) {
@@ -77,7 +71,6 @@ export class BikeStore {
       }
 
       if (bike instanceof Bike) {
-        console.log('Updating bike position');
         const lastPosition = bike.gpsPosition;
         bike.updateLocation(position);
         if (lastPosition) {
@@ -86,22 +79,10 @@ export class BikeStore {
       }
     });
 
-    // const timeoutChecker = setInterval(() => {
-    //     const bike = this.bikes.get(bikeId);
-    //     if (bike instanceof Bike) {
-    //         const timeSinceUpdate = Date.now() - (bike.gpsPosition?.timestamp ?? Infinity);
-    //         if (timeSinceUpdate > 5000 && bike.speed !== 0) {
-    //             console.warn('No GPS update in 5 seconds. Resetting speed to 0');
-    //             bike.updateSpeed(0);
-    //         }
-    //     }
-    // }, 5000);
-
-    // this.gpsTimeoutCheckers.set(bikeId, timeoutChecker);
     this.gpsProviders.set(bikeId, provider);
   }
 
-  stopGPSProvider(bikeId: string) {
+  stopGPSProvider(bikeId: string): void {
     const existing = this.gpsProviders.get(bikeId);
     if (existing) {
       existing.stopUpdate();
@@ -109,12 +90,10 @@ export class BikeStore {
     }
   }
 
-  clear() {
+  clear(): void {
     for (const bikeId of this.gpsProviders.keys()) {
       this.stopGPSProvider(bikeId);
     }
-
-    // bikeSyncService.cleanup();
 
     this.bikes = new Map();
     this.selectedBikeId = null;

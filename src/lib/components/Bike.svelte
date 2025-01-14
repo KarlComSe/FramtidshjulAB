@@ -1,6 +1,4 @@
 <script lang="ts">
-  import BikeSelector from '$lib/components/BikeSelector.svelte';
-  import QrCode from '$lib/components/QrCode.svelte';
   import BikeStatus from '$lib/components/BikeStatus.svelte';
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
   import BatterySlider from '$lib/components/BatterySlider.svelte';
@@ -10,8 +8,8 @@
   import Map from '$lib/components/Map.svelte';
   import TripControls from '$lib/components/TripControls.svelte';
 
-  let selectedBikeId = $derived(bikeStore.selectedBikeId);
-  let selectedBike = $derived(bikeStore.selectedBike());
+  const selectedBikeId = $derived(bikeStore.selectedBikeId);
+  const selectedBike = $derived(bikeStore.selectedBike());
   let syncOngoing = $state(false);
 
   $effect(() => {
@@ -20,14 +18,14 @@
     }
   });
 
-  function stopSync() {
+  function stopSync(): void {
     if (selectedBikeId) {
       bikeSyncService.stopSync(selectedBikeId);
       syncOngoing = bikeSyncService.isSyncRunning(selectedBikeId);
     }
   }
 
-  function startSync() {
+  function startSync(): void {
     if (selectedBikeId) {
       bikeSyncService.startSync(selectedBikeId);
       syncOngoing = bikeSyncService.isSyncRunning(selectedBikeId);
