@@ -40,3 +40,5 @@ coverage
 /static/build
 
 gitdiff.txt
+export-project.js
+export-project.sh

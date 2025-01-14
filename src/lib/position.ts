@@ -1,5 +1,5 @@
-if ("geolocation" in navigator) {
-    /* geolocation is available */
-  } else {
-    /* geolocation IS NOT available */
-  }
+if ('geolocation' in navigator) {
+  /* geolocation is available */
+} else {
+  /* geolocation IS NOT available */
+}

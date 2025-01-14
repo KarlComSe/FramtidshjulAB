@@ -1,11 +1,9 @@
 <script lang="ts">
-    import AllBikeMap from "$lib/components/AllBikeMap.svelte";
-
-
+  import AllBikeMap from '$lib/components/AllBikeMap.svelte';
 </script>
 
 <div class="">
-	<AllBikeMap />
+  <AllBikeMap />
 </div>
 
 <style>

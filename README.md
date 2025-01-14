@@ -1,24 +1,29 @@
 # Framtidshjul AB - electrical scooter control emulator (ESCe) project
 
-
 ## Installing, deploying and running the application
 
-### Development setup 
+### Development setup
+
 **Prereq:**
-* Docker and Docker Compose
-* Repo cloned / initiated
+
+- Docker and Docker Compose
+- Repo cloned / initiated
 
 **Start the dev server:**
-* `docker compose -f docker-compose-dev.yml up --build`
+
+- `docker compose -f docker-compose-dev.yml up --build`
 
 Server is now available at http://localhost:5174
 
 ### Installation (Standard Svelte: manual setup)
+
 **Prereq:**
+
 - Node.js
 - npm
 
 Clone the repository and install the dependencies:
+
 ```bash
 npm install
 ```
@@ -59,16 +64,15 @@ cd FramtidsHjulAB
 
 ## Todo / focus
 
-
 - Testing, code quality metrics, eslint, prettier? :| ?
 - Clean the README
--- Fix the deployment section
+  -- Fix the deployment section
 
 - Implement the speed zone service (remote or local calculations?) ==> Done
 - Beautify the trip log ==> Done
 - Report of position : to implement this, there is a need to:
   - Send updates to the server with the bike sync service. ==> done
-  - Update GPS position of bike every x-seconds. 
+  - Update GPS position of bike every x-seconds.
     - Get geolocation data ==> Done
     - Run simulated GPS data ==> Done
     - Possibility to mock with simple text fields ==> Will be deferred
@@ -79,10 +83,11 @@ cd FramtidsHjulAB
 
 ## Enhancements
 
-- Make the bike sync service reactive, enabling presentation of all syncers running and their frequencies. 
+- Make the bike sync service reactive, enabling presentation of all syncers running and their frequencies.
 - Implement websockets instead of frequent REST-API polling
 
 ## Introduction
+
 This is an emulator for controlling and monitoring electrical scooters. The emulator is intended to run in each bike and control/monitor it.
 
 The emulator is built in SvelteKit. The intention is to write Svelte 5 idiomatic code and to use the latest features of SvelteKit. The key reasons for this choice are:
@@ -98,6 +103,7 @@ The emulator is built in SvelteKit. The intention is to write Svelte 5 idiomatic
 SCRUTINIZER COVERAGE BADGE
 
 ## Requirements
+
 - [x] This program is intended to run in each bike and control/monitor it.
 - [x] The bike reports its position at regular intervals.
 - [x] The bike reports whether it is moving or stationary and its speed.
@@ -109,23 +115,25 @@ SCRUTINIZER COVERAGE BADGE
 - [x] When the bike is taken in for maintenance or charging, it is marked as being in maintenance mode. A bike that is charging at a charging station cannot be rented by a customer and a red light indicates that it is not available.
 
 ## Additional features
+
 - [x] Geo-fencing / speed zones
 
 ## Implementation
+
 - The ESCe is represented as a Single Page Application (SPA) that runs in a web browser.
 - The user selects which bike to control from a list of bikes.
-- The user can interact with the bike as if it were a real bike. 
+- The user can interact with the bike as if it were a real bike.
 - The bike's position is simulated by either:
   - The navigator.geolocation API.
   - Pre-recorded GPS data.
 
 ## General structure
 
-The bike keeps an internal state, which partially and periodically is sent as an external state. Part of the state is saved in the local storage (trip log). 
+The bike keeps an internal state, which partially and periodically is sent as an external state. Part of the state is saved in the local storage (trip log).
 
 The update of internal state is triggered by user interaction or by the GPS position. The update of external state is triggered by user actions or by a set interval.
 
-## Requirements implementation 
+## Requirements implementation
 
 ### UI:
 
@@ -136,7 +144,7 @@ The user has 2 main screens:
 
 Additional screen:
 
-- Map and simulation screen: Possible to watch and play with multiple bikes. Built as a way to test the complete application, end 2 end. 
+- Map and simulation screen: Possible to watch and play with multiple bikes. Built as a way to test the complete application, end 2 end.
 
 ### Selecting a bike:
 
@@ -165,17 +173,17 @@ When a bike is selected, the user is presented with the following information:
   - Return the bike.
   - View the bike's log of trips. (Likely only for technicians in reality)
 
-__*Start the bike*__: The user can only start the bike if it is rented. The bike will check that it is rented and save the customer id of the renter.
+**_Start the bike_**: The user can only start the bike if it is rented. The bike will check that it is rented and save the customer id of the renter.
 
 - Internal state: Save {bike-id}: renter id, pos and start-time in log (if not already saved). Set status to "Startad".
 - External state: No update is being made. The update in external state is triggered in customer app.
 
-__*Stop the bike*__: The user can stop the bike at any time. When the bike is stopped, the location will not be updated and the bike will be considered stationary. If a simulated GPS is used, the bike will stop moving.
+**_Stop the bike_**: The user can stop the bike at any time. When the bike is stopped, the location will not be updated and the bike will be considered stationary. If a simulated GPS is used, the bike will stop moving.
 
 - Internal state: Set status to "Pausad". GPS position will keep being updated, even if bike is paused, this doesn't hinder someone from running with the bike...
 - External state: N/A.
 
-__*Return the bike*__: The user can return the bike at any time. When the bike is returned, the GPS position is saved to a log, along with the customer id and the time. 
+**_Return the bike_**: The user can return the bike at any time. When the bike is returned, the GPS position is saved to a log, along with the customer id and the time.
 
 - Internal state: Save {bike-id}: renter id, pos and stop-time in log. Update bike status to available.
 - External state: Stop active bike rental.
@@ -188,16 +196,15 @@ __*Return the bike*__: The user can return the bike at any time. When the bike i
 #### Example Trip Log
 
 | Bike ID | Start Time       | Start Position (Lat, Long) | Stop Time        | Stop Position (Lat, Long) | Renter ID |
-|---------|------------------|----------------------------|------------------|---------------------------|-----------|
+| ------- | ---------------- | -------------------------- | ---------------- | ------------------------- | --------- |
 | 1       | 2024-10-01 08:00 | 59.3293, 18.0686           | 2024-10-01 08:30 | 59.3326, 18.0649          | 123       |
 | 2       | 2024-10-01 09:15 | 59.3293, 18.0686           | 2024-10-01 09:45 | 59.3350, 18.0700          | 456       |
 | 3       | 2024-10-01 10:00 | 59.3293, 18.0686           | 2024-10-01 10:30 | 59.3310, 18.0650          | 789       |
 
-
-
 ### Report of position
 
 - The bike's position is simulated by either:
+
   - The navigator.geolocation API.
   - Pre-recorded GPS data.
 
@@ -223,6 +230,7 @@ The API provide speed zones, which are defined as polygons with a speed limit. T
 There is no emphasis on the efficiency of the algorithm, as the number of speed zones is expected to be low.
 
 Pseudocode:
+
 ```javascript
 
 if bike is selected and GPS position is available:
@@ -254,10 +262,10 @@ Stores
 Types
 Providers
 
-
 ## Possible feature enhancement and improvements
 
 ### Performance optimization
+
 #### Webworker
 
 It could be interesting to offload state managemement to a webworker, e.g. the position management and syncing

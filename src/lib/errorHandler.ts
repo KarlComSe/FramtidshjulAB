@@ -1,5 +1,5 @@
-// AI generated code. 
-import { toaster } from '$lib/stores/toastSTore.svelte'
+// AI generated code.
+import { toaster } from '$lib/stores/toastSTore.svelte';
 
 export function setupGlobalErrorHandler(): void {
   window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
