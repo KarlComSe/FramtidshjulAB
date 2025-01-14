@@ -64,27 +64,16 @@ cd FramtidsHjulAB
 
 ## Todo / focus
 
-- Testing, code quality metrics, eslint, prettier? :| ?
-- Clean the README
-  -- Fix the deployment section
+- Fix the deployment
 
-- Implement the speed zone service (remote or local calculations?) ==> Done
-- Beautify the trip log ==> Done
-- Report of position : to implement this, there is a need to:
-  - Send updates to the server with the bike sync service. ==> done
-  - Update GPS position of bike every x-seconds.
-    - Get geolocation data ==> Done
-    - Run simulated GPS data ==> Done
-    - Possibility to mock with simple text fields ==> Will be deferred
-- Implement the trip store
-  - Stop button / start / return buttons ==> Done
-  - Display trip data in the log screen ==> Done
-- Implement the speed/moving/stationary logic ==> Done
+## Enhancements & known "bugs"
 
-## Enhancements
+The All bike maps only shows bikes that are within the boundaries of the initial loaded map. All bikes will be shown if one or more bikes are set to moving.
 
-- Make the bike sync service reactive, enabling presentation of all syncers running and their frequencies.
-- Implement websockets instead of frequent REST-API polling
+### Webworker
+
+It could be highly interesting to offload state managemement to webworkers, e.g. the position management and syncing, and separate the repaint to the main thread.
+
 
 ## Introduction
 
@@ -100,7 +89,7 @@ The emulator is built in SvelteKit. The intention is to write Svelte 5 idiomatic
 
 ## Code coverage
 
-SCRUTINIZER COVERAGE BADGE
+No code coverage. The project team has decided that this is a peripheral part of the project and testing is done primarily on backend API, and secondly on customer and admin interface.
 
 ## Requirements
 
@@ -193,7 +182,7 @@ When a bike is selected, the user is presented with the following information:
 - The bike saves a log of its trips with start (location, time) and end (location, time) as well as the customer.
 - When the return button is pressed, the bike saves the stop time and position in the log.
 
-#### Example Trip Log
+#### Example Trip Log (schematic, real implementation differs slightly)
 
 | Bike ID | Start Time       | Start Position (Lat, Long) | Stop Time        | Stop Position (Lat, Long) | Renter ID |
 | ------- | ---------------- | -------------------------- | ---------------- | ------------------------- | --------- |
@@ -250,7 +239,6 @@ function getSpeedZone(position):
 
 QRCode - for generating QR-codes
 Turf.js - for intersection of polygons
-uuid - for generating unique ids (can use browswer function instead?) ==> Not needed anymore. To be deleted.
 
 ### File and folder structure
 
@@ -261,19 +249,3 @@ Services
 Stores
 Types
 Providers
-
-## Possible feature enhancement and improvements
-
-### Performance optimization
-
-#### Webworker
-
-It could be interesting to offload state managemement to a webworker, e.g. the position management and syncing
-
-#### Batch call / Implement web sockets
-
-There is a limitation in number of concurrent HTTP requests that is allocated by a browser to a single domain.
-
-### Refactoring
-
-...
