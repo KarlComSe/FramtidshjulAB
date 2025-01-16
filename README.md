@@ -74,7 +74,6 @@ The All bike maps only shows bikes that are within the boundaries of the initial
 
 It could be highly interesting to offload state managemement to webworkers, e.g. the position management and syncing, and separate the repaint to the main thread.
 
-
 ## Introduction
 
 This is an emulator for controlling and monitoring electrical scooters. The emulator is intended to run in each bike and control/monitor it.
