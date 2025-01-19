@@ -70,6 +70,8 @@ cd FramtidsHjulAB
 
 The All bike maps only shows bikes that are within the boundaries of the initial loaded map. All bikes will be shown if one or more bikes are set to moving.
 
+The bike state is only synced at initial load, with one exception (when trying to start a bike). This means e.g. that when a bike status is updated by the backend to service (if it is parked in a parking zone), it will be shown as available. 
+
 ### Webworker
 
 It could be highly interesting to offload state managemement to webworkers, e.g. the position management and syncing, and separate the repaint to the main thread.

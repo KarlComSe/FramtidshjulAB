@@ -164,6 +164,10 @@ export class BikeSyncService {
     });
   }
 
+  changeBatteryLevel(selectedBike: BikeType) {
+    this.syncBikeData(selectedBike);
+  }
+
   isSyncRunning(bikeId: string): boolean {
     return this.intervals.has(bikeId);
   }

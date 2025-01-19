@@ -71,6 +71,7 @@ export class Bike implements BikeType {
     this.renter = undefined;
     this.status = BikeStatus.Available;
     await BikeRentService.stopRent(this.id);
+    this.isTravelling = false;
   }
 
   updateLocation(position: Position): void {
@@ -95,8 +96,9 @@ export class Bike implements BikeType {
     if (!this.isEquipmentOn) {
       throw new Error('Cannot start ride : equipment is off');
     }
+
     if (this.status !== BikeStatus.Rented || this.renter === undefined) {
-      throw new Error('Cannot start ride : bike is not rented or renter is not known to bike');
+      this.startRide();
     }
     this.isTravelling = !this.isTravelling;
   }
