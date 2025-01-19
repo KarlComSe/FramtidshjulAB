@@ -109,10 +109,12 @@ export class SpeedZoneStore {
     return longitude >= minX && longitude <= maxX && latitude >= minY && latitude <= maxY;
   }
 
-  private validateBikePosition(bikePosition: { latitude: number; longitude: number; }) : void {
-    if (!bikePosition ||
+  private validateBikePosition(bikePosition: { latitude: number; longitude: number }): void {
+    if (
+      !bikePosition ||
       typeof bikePosition.latitude !== 'number' ||
-      typeof bikePosition.longitude !== 'number') {
+      typeof bikePosition.longitude !== 'number'
+    ) {
       throw new Error('Invalid bike position');
     }
   }

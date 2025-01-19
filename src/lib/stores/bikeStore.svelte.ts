@@ -11,7 +11,6 @@ import { Bike } from '$lib/models/bike.svelte';
 // import { bikeSyncService } from "$lib/services/bikeSync.svelte";
 
 export class BikeStore {
-
   private readonly UPDATE_INTERVAL = 1000; // Base interval
   private mainInterval: number | null = null;
 

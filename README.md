@@ -66,12 +66,11 @@ cd FramtidsHjulAB
 
 [Screencast from 2025-01-19 10-43-27.webm](https://github.com/user-attachments/assets/d5fd6677-bae2-4a15-bea0-b2b5310d6383)
 
-
 ## Enhancements & known "bugs"
 
 The All bike maps only shows bikes that are within the boundaries of the initial loaded map. All bikes will be shown if one or more bikes are set to moving.
 
-The bike state is only synced at initial load, with one exception (when trying to start a bike). This means e.g. that when a bike status is updated by the backend to service (if it is parked in a parking zone), it will be shown as available. 
+The bike state is only synced at initial load, with one exception (when trying to start a bike). This means e.g. that when a bike status is updated by the backend to service (if it is parked in a parking zone), it will be shown as available.
 
 ### Webworker
 
@@ -227,10 +226,10 @@ Turf.js - for intersection of polygons
 
 ### File and folder structure
 
-* Components
-* Routes
-* Models
-* Services
-* Stores
-* Types
-* Providers
+- Components
+- Routes
+- Models
+- Services
+- Stores
+- Types
+- Providers

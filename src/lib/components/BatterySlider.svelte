@@ -1,6 +1,6 @@
 <script lang="ts">
   import { bikeStore } from '$lib/stores/bikeStore.svelte';
-  import { bikeSyncService } from "$lib/services/bikeSync.svelte";
+  import { bikeSyncService } from '$lib/services/bikeSync.svelte';
 
   // Get the selected bike
   const selectedBike = $derived(bikeStore.selectedBike());
@@ -26,7 +26,7 @@
   <div class="my-2 rounded-lg bg-white p-4 shadow-md">
     <div class="mb-2 flex items-center justify-between">
       <span class="text-sm text-gray-600">Battery Level</span>
-      <span class="text-sm font-medium {getBatteryColor(selectedBike.batteryLevel??0)}">
+      <span class="text-sm font-medium {getBatteryColor(selectedBike.batteryLevel ?? 0)}">
         {selectedBike.batteryLevel}%
       </span>
     </div>

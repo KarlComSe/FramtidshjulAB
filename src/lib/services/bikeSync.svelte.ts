@@ -164,7 +164,7 @@ export class BikeSyncService {
     });
   }
 
-  changeBatteryLevel(selectedBike: BikeType) : void {
+  changeBatteryLevel(selectedBike: BikeType): void {
     this.syncBikeData(selectedBike);
   }
 
