@@ -218,24 +218,7 @@ The bike's speed zone is determined by the speed limit in the area. The speed li
 
 The API provide speed zones, which are defined as polygons with a speed limit. The bike's position is checked against the speed zones to determine the speed limit.
 
-There is no emphasis on the efficiency of the algorithm, as the number of speed zones is expected to be low.
-
-Pseudocode:
-
-```javascript
-
-if bike is selected and GPS position is available:
-    every 1000 ms:
-        bike.speedZone = getSpeedZone(bike.position);
-
-function getSpeedZone(position):
-    for zone in speedZones:
-        if position is inside zone:
-            return zone.speedLimit;
-    return "Freie Fahrt für freie Bürger";
-
-
-```
+Certain performance considerations where made. Each zone had a bounding box created to enable quicker check if a point is in the bounding box. There is also a cache for points, and each position within a certain radius is hitting the cached speed zone.
 
 ### Packages reminder
 
@@ -244,10 +227,10 @@ Turf.js - for intersection of polygons
 
 ### File and folder structure
 
-Components
-Routes
-Models
-Services
-Stores
-Types
-Providers
+* Components
+* Routes
+* Models
+* Services
+* Stores
+* Types
+* Providers
