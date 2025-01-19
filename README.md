@@ -1,19 +1,14 @@
 # Framtidshjul AB - electrical scooter control emulator (ESCe) project
 
+This application was developed to meet the requirements for "being an electrical scooter bike" and support simulation of 3000+ bikes, in the course [DV1676 at BTH](https://dbwebb.se/kurser/vteam-v1). This is part of [a project work with main repo available here](https://github.com/KarlComSe/SvenskaElsparkcyklarAB).
+
 ## Installing, deploying and running the application
 
-### Development setup
-
-**Prereq:**
-
-- Docker and Docker Compose
-- Repo cloned / initiated
-
-**Start the dev server:**
-
-- `docker compose -f docker-compose-dev.yml up --build`
-
-Server is now available at http://localhost:5174
+### Introduction
+This app relies on the backend solution from [backend](https://github.com/KarlComSe/SvenskaElsparkcyklarAB/tree/development/backend). 
+1)	Clone the main repo from here [SvenskaElsparkcyklar AB](https://github.com/KarlComSe/SvenskaElsparkcyklarAB/)
+2)	Follow instructions from [here](https://github.com/KarlComSe/SvenskaElsparkcyklarAB/)
+3)	It is possible to run as part of a docker setup, or just start this app and the backend separately.
 
 ### Installation (Standard Svelte: manual setup)
 
@@ -44,14 +39,6 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
-
-### Installation (Docker)
-
-TBD
-
-### Deployment (Docker compose)
-
-TBD
 
 ### Initiate the repository
 
