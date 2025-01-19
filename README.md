@@ -62,9 +62,10 @@ git clone git@github.com:KarlComSe/FramtidshjulAB.git
 cd FramtidsHjulAB
 ```
 
-## Todo / focus
+## Video of the app
 
-- Fix the deployment
+[![Demo Video]](https://github.com/KarlComSe/FramtidshjulAB/blob/docs/add-video/static/demo-video.webm)
+
 
 ## Enhancements & known "bugs"
 
