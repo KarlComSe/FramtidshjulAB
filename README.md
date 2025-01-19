@@ -64,7 +64,7 @@ cd FramtidsHjulAB
 
 ## Video of the app
 
-https://github.com/KarlComSe/FramtidshjulAB/blob/docs/add-video/static/demo-video.webm
+[Screencast from 2025-01-19 10-43-27.webm](https://github.com/user-attachments/assets/d5fd6677-bae2-4a15-bea0-b2b5310d6383)
 
 
 ## Enhancements & known "bugs"
