@@ -38,7 +38,7 @@ export default ts.config(
       '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
 
       // SonarJS rules (these don't require type information)
-      'sonarjs/cognitive-complexity': ['error', 15],
+      'sonarjs/cognitive-complexity': ['error', 9],
       'sonarjs/no-duplicate-string': ['error', { threshold: 5 }],
       'sonarjs/no-identical-functions': 'error',
       'sonarjs/no-redundant-jump': 'error',
@@ -50,8 +50,8 @@ export default ts.config(
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-duplicate-imports': 'error',
-      complexity: ['error', { max: 15 }],
-      'max-depth': ['error', { max: 4 }],
+      complexity: ['error', { max: 10 }],
+      'max-depth': ['error', { max: 3 }],
       'max-params': ['error', { max: 4 }],
 
       // Svelte specific

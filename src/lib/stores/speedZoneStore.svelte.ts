@@ -1,6 +1,6 @@
 import type { SpeedZone } from '$lib/types/Polygon';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import type { Feature, Point, Polygon, BBox } from 'geojson';
+import type { Feature, Point, Position, Polygon, BBox } from 'geojson';
 import { bbox } from '@turf/turf';
 
 interface GeoJSONSpeedZone {
@@ -76,13 +76,7 @@ export class SpeedZoneStore {
   }
 
   getSpeedLimitAtPoint(bikePosition: { latitude: number; longitude: number }): number | undefined {
-    if (
-      !bikePosition ||
-      typeof bikePosition.latitude !== 'number' ||
-      typeof bikePosition.longitude !== 'number'
-    ) {
-      throw new Error('Invalid bike position');
-    }
+    this.validateBikePosition(bikePosition);
 
     const point = this.createPointFeature(bikePosition.latitude, bikePosition.longitude);
 
@@ -97,10 +91,7 @@ export class SpeedZoneStore {
       const boundingBox = this.zoneBboxes.get(zone.id);
       if (!boundingBox) continue;
 
-      const [minX, minY, maxX, maxY] = boundingBox;
-      const [longitude, latitude] = point.geometry.coordinates;
-
-      if (longitude >= minX && longitude <= maxX && latitude >= minY && latitude <= maxY) {
+      if (this.isWithinBoundingBox(boundingBox, point.geometry.coordinates)) {
         if (booleanPointInPolygon(point, zone.polygon)) {
           const limit = zone.speedLimit;
           this.cache.set(key, limit);
@@ -110,6 +101,20 @@ export class SpeedZoneStore {
     }
 
     return undefined;
+  }
+
+  private isWithinBoundingBox(boundingBox: BBox, coordinates: Position): boolean {
+    const [minX, minY, maxX, maxY] = boundingBox;
+    const [longitude, latitude] = coordinates;
+    return longitude >= minX && longitude <= maxX && latitude >= minY && latitude <= maxY;
+  }
+
+  private validateBikePosition(bikePosition: { latitude: number; longitude: number; }) : void {
+    if (!bikePosition ||
+      typeof bikePosition.latitude !== 'number' ||
+      typeof bikePosition.longitude !== 'number') {
+      throw new Error('Invalid bike position');
+    }
   }
 }
 
